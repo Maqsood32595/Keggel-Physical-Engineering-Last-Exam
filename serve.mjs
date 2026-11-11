@@ -41,24 +41,23 @@ const MAX_FRAME = 16 << 20;
 const IDLE_MS = Number(process.env.MODEL_IDLE_SEC || 1800) * 1000;
 const dispatcher = new EnvHttpProxyAgent({ headersTimeout: IDLE_MS, bodyTimeout: IDLE_MS });
 
-const SYSTEM = (workdir) => `You are a licensed professional engineer operating under the Fractal Kernel architecture \
+const SYSTEM = (workdir) => `You are a licensed principal engineer operating under the Fractal Kernel architecture \
 inside an isolated Linux container with no internet access. Your bash shell starts in ${workdir}.
 
 ENVIRONMENT CAPABILITIES:
-- You have bash access. Use standard Python 3 with pandas, numpy, math, and json to compute exact values and write files.
+- You have bash access. Use Python 3 (pandas, numpy, scipy, math, json, openpyxl, ezdxf, ifcopenshell, pypdf/fitz, tesseract) to compute exact physics/engineering values and generate files.
 - NEVER import 'default_api' inside Python scripts. Write standard standalone Python code.
-- Write and edit deliverable files directly on disk in their target directory (e.g. 'output/').
-- The harness automatically synchronizes and updates target ZIP files (such as 'submission.zip') with the latest files from the output directory.
+- Write and edit deliverable files directly inside the task's required target directory (e.g. 'output/' or explicit deliverable path).
+- The harness automatically synchronizes target ZIP files from the output directory and runs hard-gate verification before completion.
 
-FRACTAL KERNEL PRINCIPLES:
-1. MANIFEST-DRIVEN EXECUTION: Work systematically by feature slice. Each slice isolates specific deliverables.
-2. COMPUTATION OVER SPECULATION: Calculate all loads, stresses, capacities, and code requirements using Python scripts and verifiable mathematics.
-3. HARD-GATE COMPLIANCE: Zero safety violations. Zero missed deliverables. Every CSV must contain all calculated data rows (never empty headers only). Every method note must exceed 200 words.
-4. CATALOG SPECIFICATIONS: When specifying temporary works, shoring, scaffolding, or equipment in JSON files, NEVER use empty '{}' or placeholder objects. Read the 'catalogue/' folder and specify actual post types, duty classes, bay counts, spacings, guardrail dimensions, mudsills, qualified designer name, and drawing references.
-5. RESOURCE LEVELING: When scheduling sequences (CPM schedules), strictly level resources. Obey single-shift daily caps (e.g. crane hours <= 10 hrs/day), concurrent gang caps (e.g. active crews <= 8), and yard/laydown limits. Stagger or chain resource-constrained tasks sequentially across days.
-6. EXHAUSTIVE CONSTRAINT RECALL: When creating constraint registers, scan all files in 'rules/' and project docs. Extract all governing clauses, numerical parameters, and regulatory citations (>40 entries) to achieve >70% recall and prevent gating penalties.
-7. ITERATIVE IMPROVEMENT: A baseline deliverable skeleton has already been bootstrapped. Improve each deliverable in-place until fully compliant.
-8. AUDIT BEFORE COMPLETION: The harness will audit all deliverables on disk before submission. If audit gaps are detected, resolve them immediately.`;
+UNIVERSAL FRACTAL KERNEL PRINCIPLES:
+1. EXHAUSTIVE RECONNAISSANCE FIRST: Inventory the entire workspace (specs, rules/, codes, drawings, CAD/DXF/IFC, catalogs, RFIs, addenda, correspondence) before writing deliverables. If a PDF yields empty/garbled extracted text (scanned drawing/schedule), render pages to PNG (pdftoppm/fitz) and run OCR (tesseract) or visual/image inspection so zero requirements or notes are missed.
+2. AUTHORITY & CHRONOLOGICAL PRECEDENCE: Resolve conflicting project documents strictly in authority order (Preliminary < Permit < Bid < IFC < Field_Directive < RFI_Response < Addendum < AHJ_Letter; later revisions supersede earlier ones). Strictly exclude superseded or out-of-scope clauses from active constraint registers and design inputs.
+3. FULL-PRECISION DETERMINISTIC COMPUTATION: Perform all multi-step analytical, fluid, thermal, structural, electrical, and financial modeling in Python using IEEE-754 64-bit floating-point arithmetic without intermediate rounding. Chain exact downstream demands, apply discrete math.ceil() for standard packaged/commercial increments, and never guess when equations or tables govern.
+4. PROGRAMMATIC GEOMETRY & CLASH VERIFICATION: When DXF, CAD, or IFC/BIM models exist, parse entity coordinates, elevations, clearances, and bounding boxes directly in Python. Verify 3D spatial routing and confirm zero geometric AABB clashes (clashes == 0) before finalizing designs.
+5. COMPLETE SPECIFICATIONS & RESOURCE LEVELING: Never leave placeholder '{}' objects, 'TBD', 'To Be Determined', 'XXX', '<fill in>', 'NaN', or 'Inf' in any deliverable. Fully populate catalog/BOM attributes (ratings, dimensions, part codes, qualified references) from project catalogs and obey resource caps (daily crane/shift limits, gang caps, storage/laydown limits).
+6. CROSS-FILE QUANTITATIVE PARITY & SCHEMA INTEGRITY: Guarantee exact agreement of IDs, quantities, costs, totals, and units across every deliverable (.csv, .xlsx, .json, .md, .docx, .dxf, .ifc). Double-check CSV/XLSX column-to-header alignment row-by-row (never shift IDs into 'document' or values across columns).
+7. SELF-AUDIT BEFORE SUBMISSION: Compile and run automated verification scripts on disk checking calculations, constraints recall/precision, parity, schema alignment, and zero safety violations. Fix every gap immediately.`;
 
 const tool = (name, description, ...params) => ({
   type: "function",
@@ -296,8 +295,8 @@ async function readReply(body, onText) {
         if (id) byId.set(id, call);
         last = call;
         const { name, arguments: args, ...functionFields } = fn ?? {};
-        Object.assign(call, present(callFields));
-        Object.assign(call.function, present(functionFields));
+        for (const [key, value] of Object.entries(present(callFields))) call[key] = merged(call[key], value, key);
+        for (const [key, value] of Object.entries(present(functionFields))) call.function[key] = merged(call.function[key], value, key);
         call.id ||= id ?? "";
         call.function.name ||= name ?? "";
         call.function.arguments += args ?? "";
@@ -370,15 +369,31 @@ async function chat(task, messages, tools, toolChoice, signal, onText) {
 }
 
 function shorten(task, messages) {
-  const long = messages.flatMap((m, i) => (m.role === "tool" && m.content.length > 2 * CUT_KEEP ? [i] : []));
-  if (!long.length) return false;
-  const cut = long.slice(0, Math.max(1, Math.floor(long.length / 2)));
-  for (const i of cut) {
-    const start = messages[i].content.slice(0, CUT_KEEP);
-    messages[i].content = `${start}\n[... cut to save context; run the tool again if needed]`;
+  // Trim oldest oversized tool outputs first while keeping system/task prefix and most recent half intact
+  const long = messages.flatMap((m, i) => (i >= 2 && m.role === "tool" && typeof m.content === "string" && m.content.length > 2 * CUT_KEEP ? [i] : []));
+  if (long.length) {
+    const keepTail = Math.min(long.length, Math.max(1, Math.floor(long.length / 2)));
+    const cutCount = long.length === 1 ? 1 : Math.max(1, long.length - keepTail);
+    for (const i of long.slice(0, cutCount)) {
+      const origLen = messages[i].content.length;
+      messages[i].content = `${messages[i].content.slice(0, CUT_KEEP)}\n[... cut ${origLen - CUT_KEEP} chars to save context; re-run tool if needed]`;
+    }
+    task.send({ type: "log", text: `context full: trimmed ${cutCount} oldest oversized tool result(s)` });
+    return true;
   }
-  task.send({ type: "log", text: `context full: cut ${cut.length} old tool results` });
-  return true;
+
+  // Fallback: drop oldest completed assistant+(tool...) exchange after initial prompt if still overflowing
+  if (messages.length > 6) {
+    let end = 3;
+    while (end < messages.length - 2 && messages[end]?.role === "tool") end++;
+    const removed = end - 2;
+    if (removed > 0) {
+      messages.splice(2, removed);
+      task.send({ type: "log", text: `context full: dropped ${removed} oldest message(s) after prefix` });
+      return true;
+    }
+  }
+  return false;
 }
 
 async function solve(task) {
@@ -394,13 +409,23 @@ async function solve(task) {
   // 2. Pre-flight safety net: create early complete skeleton
   await createEarlySkeleton(task, taskAnalysis);
 
-  // 3. Connect to any task MCP servers
+  // 3. Connect to any task MCP servers & build discovered tool catalog
   const mcpMap = new Map();
+  const mcpDocs = [];
   if (Array.isArray(mcp_servers)) {
     for (const serverConf of mcp_servers) {
       const client = new McpClient(task, serverConf);
       await client.initialize();
       mcpMap.set(serverConf.name, client);
+      if (Array.isArray(client.tools) && client.tools.length > 0) {
+        const listed = client.tools.map((t) => {
+          const props = Object.keys(t.inputSchema?.properties || {});
+          const req = new Set(t.inputSchema?.required || []);
+          const sig = props.map((p) => (req.has(p) ? p : `${p}?`)).join(", ");
+          return `  - ${t.name}(${sig}): ${(t.description || "").replace(/\s+/g, " ").slice(0, 160)}`;
+        });
+        mcpDocs.push(`Server '${serverConf.name}':\n${listed.join("\n")}`);
+      }
     }
   }
 
@@ -408,15 +433,22 @@ async function solve(task) {
   const engine = new ManifestEngine(task, workdir);
   await engine.initializeSlices(taskAnalysis);
 
-  const tools = [...CORE_TOOLS];
+  const tools = mcpMap.size > 0
+    ? [...CORE_TOOLS]
+    : CORE_TOOLS.filter((t) => t.function.name !== "mcp_call");
+  const initialPrompt = mcpDocs.length > 0
+    ? `${engine.formatSlicePrompt(instruction)}\n\n[CONNECTED MCP TOOLS — invoke via mcp_call(server, name, arguments)]\n${mcpDocs.join("\n\n")}`
+    : engine.formatSlicePrompt(instruction);
+
   const messages = [
     { role: "system", content: SYSTEM(workdir) },
-    { role: "user", content: engine.formatSlicePrompt(instruction) },
+    { role: "user", content: initialPrompt },
   ];
 
   let nudges = 0, head = "";
   let auditPerformed = false;
   let forceToolCall = false;
+  const allowRequiredToolChoice = !MODEL.toLowerCase().includes("claude");
 
   while (true) {
     const left = task.secondsLeft();
@@ -443,7 +475,7 @@ async function solve(task) {
       : AbortSignal.any([task.abort.signal, AbortSignal.timeout(Math.round((left - WRAP_UP_SEC) * 1000))]);
 
     let reply;
-    const toolChoice = wrapUp ? "none" : (forceToolCall ? "required" : "auto");
+    const toolChoice = wrapUp ? "none" : (forceToolCall && allowRequiredToolChoice ? "required" : "auto");
     try {
       reply = await chat(task, messages, tools, toolChoice, signal, (content) => {
         task.summary = head + content;

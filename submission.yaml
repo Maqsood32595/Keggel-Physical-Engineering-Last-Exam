@@ -13,7 +13,6 @@
 # limitations under the License.
 
 name: fractal-engineering-harness
-model_api: openai-compatible/nvidia/nemotron-3.5-super-vl:free
-model_base_url: https://openrouter.ai/api/v1
+model_api: gemini/gemini-4-argon
 install: cd {src} && npm ci --omit=dev --no-audit --no-fund
 serve: node {src}/serve.mjs

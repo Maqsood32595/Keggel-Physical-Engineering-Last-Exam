@@ -21,7 +21,7 @@ export class ManifestEngine {
       {
         id: "slice_01_recon",
         name: "Recon & Constraints Extraction",
-        description: "Explore workspace documents, specs, code, rules/, catalogue/, and extract all governing clauses, numbers, and hard-gate limits into constraint registers with high recall (>70%).",
+        description: "Inventory all workspace documents, CAD/DXF/IFC geometry, scanned PDFs, catalogs, and regulatory correspondence; apply authority precedence and extract active governing limits into structured constraint registers without superseded noise.",
         phase: "recon",
         allowedTools: ["bash", "read_file", "mcp"],
         expectedExports: ["recon_summary.md"],
@@ -29,7 +29,7 @@ export class ManifestEngine {
       {
         id: "slice_02_execution",
         name: "Engineering Computation & Deliverables",
-        description: "Perform physical/structural/electrical calculations and generate required deliverable files. Apply resource leveling (crane shifts <= daily limit, gang caps) and populate all JSON equipment/temporary works with real catalog entries (never empty {}).",
+        description: "Build deterministic 64-bit computational scripts to solve governing physical, analytical, geometric, and cost/scheduling requirements; enforce resource leveling, zero geometric clashes, schema/column alignment, and full catalog/BOM population.",
         phase: "compute",
         allowedTools: ["bash", "read_file", "write_file", "edit_file", "mcp"],
         expectedExports: taskAnalysis.subFiles.map(s => s.filename),
@@ -37,7 +37,7 @@ export class ManifestEngine {
       {
         id: "slice_03_packaging_and_audit",
         name: "Packaging & Hard-Gate Verification",
-        description: "Package final deliverables (e.g. submission.zip), verify code compliance, and confirm non-empty outputs.",
+        description: "Verify cross-file quantitative parity, register schema/column alignment, zero placeholder values (TBD/NaN), and package exact requested deliverables.",
         phase: "audit",
         allowedTools: ["bash", "read_file", "write_file"],
         expectedExports: taskAnalysis.primaryTargets,

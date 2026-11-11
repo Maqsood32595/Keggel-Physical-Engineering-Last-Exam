@@ -5,9 +5,9 @@
 
 export function parseDeliverables(instruction, workdir = "/filesystem") {
   const deliverables = new Set();
-  
+
   // 1. Check for explicit output file paths in instructions
-  const pathRegex = /(?:\/[\w.-]+)+\/(?:submission\.zip|solution\.py|model\.ifc|[\w.-]+\.(?:zip|py|ifc|csv|json|md|xlsx|docx))/gi;
+  const pathRegex = /(?:\/[\w.-]+)+\/(?:submission\.zip|solution\.py|model\.ifc|[\w.-]+\.(?:zip|py|ifc|csv|json|md|xlsx|docx|dxf|txt|pdf))/gi;
   let match;
   while ((match = pathRegex.exec(instruction)) !== null) {
     deliverables.add(match[0]);
@@ -24,15 +24,24 @@ export function parseDeliverables(instruction, workdir = "/filesystem") {
     }
   }
 
-  // 3. Extract sub-files required inside submission.zip (e.g. from markdown tables)
+  // 3. Extract sub-files required inside submission.zip from markdown tables and lists
   const subFiles = [];
-  const tableRowRegex = /\|\s*`?([\w.-]+\.(?:csv|json|md|py|txt|ifc|pdf))`?\s*\|\s*([^|\n]+)\|/gi;
+  const seen = new Set();
+  const addSubFile = (filename, requirements) => {
+    const clean = filename.trim();
+    if (!clean || ["File", "Name", "Parameter", "Filename"].includes(clean) || seen.has(clean)) return;
+    seen.add(clean);
+    subFiles.push({ filename: clean, requirements: requirements.trim() });
+  };
+
+  const tableRowRegex = /\|\s*`?([\w.-]+\.(?:csv|json|md|py|txt|ifc|pdf|xlsx|docx|dxf))`?\s*\|\s*([^|\n]+)\|/gi;
   while ((match = tableRowRegex.exec(instruction)) !== null) {
-    const filename = match[1].trim();
-    const colsDesc = match[2].trim();
-    if (!["File", "Name", "Parameter"].includes(filename)) {
-      subFiles.push({ filename, requirements: colsDesc });
-    }
+    addSubFile(match[1], match[2]);
+  }
+
+  const listItemRegex = /^(?:\s*(?:[-*]|\d+\.)\s+)(?:\*\*|`)?([\w.-]+\.(?:csv|json|md|py|txt|ifc|pdf|xlsx|docx|dxf))(?:\*\*|`)?(?:\s*[:—–-]\s*([^\n]+))?/gim;
+  while ((match = listItemRegex.exec(instruction)) !== null) {
+    addSubFile(match[1], match[2] || "");
   }
 
   return {
@@ -44,8 +53,7 @@ export function parseDeliverables(instruction, workdir = "/filesystem") {
 
 /**
  * Creates an early valid skeleton of deliverables on disk within the first turns.
- * The benchmark strictly states:
- * "Create a complete submission early, then improve it in place. The last file on disk is graded."
+ * Avoids touching 0-byte binary formats (.xlsx, .docx, .dxf, .pdf) so readers never choke.
  */
 export async function createEarlySkeleton(task, { primaryTargets, subFiles, workdir }) {
   for (const target of primaryTargets) {
@@ -60,9 +68,7 @@ export async function createEarlySkeleton(task, { primaryTargets, subFiles, work
         } else if (item.filename.endsWith(".json")) {
           script += `test -f "${item.filename}" || echo '{}' > "${item.filename}"\n`;
         } else if (item.filename.endsWith(".md")) {
-          script += `test -f "${item.filename}" || cat << 'EOF' > "${item.filename}"\n# Method Note\n\nInitial placeholder draft.\nEOF\n`;
-        } else {
-          script += `test -f "${item.filename}" || touch "${item.filename}"\n`;
+          script += `test -f "${item.filename}" || cat << 'EOF' > "${item.filename}"\n# Engineering Note\n\nInitial draft.\nEOF\n`;
         }
       }
       task.send({ type: "log", text: `[FractalKernel] Bootstrapping early deliverable skeleton in ${outputDir}` });
@@ -70,9 +76,6 @@ export async function createEarlySkeleton(task, { primaryTargets, subFiles, work
       await syncDeliverablesToZip(task, { primaryTargets: [target], workdir });
     } else if (target.endsWith(".py")) {
       const script = `mkdir -p "$(dirname "${target}")" && test -f "${target}" || echo '# Solution script' > "${target}"`;
-      await task.request({ type: "exec", command: script, timeout_sec: 15 });
-    } else if (target.endsWith(".ifc")) {
-      const script = `mkdir -p "$(dirname "${target}")" && test -f "${target}" || touch "${target}"`;
       await task.request({ type: "exec", command: script, timeout_sec: 15 });
     }
   }
@@ -125,87 +128,187 @@ if files:
  * Hard-gate verification: inspects deliverables on disk and inside zip.
  */
 export async function verifyDeliverables(task, { primaryTargets, subFiles, workdir = "/filesystem" }) {
-  const issues = [];
-  
-  for (const target of primaryTargets) {
-    const check = await task.request({
-      type: "exec",
-      command: `test -f "${target}" && ls -lh "${target}" || echo "MISSING"`,
-      timeout_sec: 15,
-    });
-    if (!check.output || check.output.includes("MISSING")) {
-      issues.push(`Target deliverable missing: ${target}`);
-      continue;
-    }
+  const payloadB64 = Buffer.from(JSON.stringify({ primaryTargets, subFiles, workdir })).toString("base64");
+  const verifyScript = `python3 -I - << 'PY_VERIFY_EOF'
+import base64, csv, json, os, pathlib, py_compile, re, zipfile
 
-    if (target.endsWith(".zip")) {
-      const outputDir = target.substring(0, target.lastIndexOf("/"));
-      
-      // Check each subfile directly on disk
-      for (const sub of subFiles) {
-        const filePath = `${outputDir}/${sub.filename}`;
-        if (sub.filename.endsWith(".csv")) {
-          const linesCheck = await task.request({
-            type: "exec",
-            command: `test -f "${filePath}" && wc -l < "${filePath}" || echo "0"`,
-            timeout_sec: 10,
-          });
-          const lineCount = parseInt(linesCheck.output?.trim() || "0", 10);
-          if (lineCount <= 1) {
-            issues.push(`${sub.filename} on disk has only header row or is empty (line count: ${lineCount})`);
-          }
-        } else if (sub.filename.endsWith(".md")) {
-          const wordsCheck = await task.request({
-            type: "exec",
-            command: `test -f "${filePath}" && wc -w < "${filePath}" || echo "0"`,
-            timeout_sec: 10,
-          });
-          const wordCount = parseInt(wordsCheck.output?.trim() || "0", 10);
-          if (wordCount < 200) {
-            issues.push(`${sub.filename} on disk has ${wordCount} words (minimum required is 200 words)`);
-          }
-        } else if (sub.filename.endsWith(".json")) {
-          const jsonCheck = await task.request({
-            type: "exec",
-            command: `python3 -I -c "
-import json
-d = json.load(open('${filePath}'))
-zl = d.get('zone_lifts', {})
-if not zl:
-    print('EMPTY_ROOT')
-else:
-    empty_designs = [k for k, v in zl.items() if not v.get('shoring') or not v.get('scaffold')]
-    if empty_designs:
-        print('MISSING_DESIGNS:', len(empty_designs))
+cfg = json.loads(base64.b64decode("${payloadB64}").decode("utf-8"))
+issues = []
+
+BAD_TOKENS = {
+    "TBD", "TO BE DETERMINED", "TBC", "XXX", "<FILL", "<FILL IN>",
+    "PLACEHOLDER", "NAN", "INF", "-INF", "#REF!", "#DIV/0!", "#VALUE!", "#NAME?", "TODO", "[TODO]"
+}
+ROW_ID_IN_DOC_RE = re.compile(r"^(?:R|RQ|REQ)[-_]?\\d+$", re.I)
+
+def check_bad_tokens(val, ctx):
+    if val is None:
+        return None
+    s = str(val).strip()
+    if not s or s.startswith("="):
+        return None
+    u = s.upper()
+    if u in BAD_TOKENS:
+        return f"{ctx} contains invalid sentinel value '{s}'"
+    if "<FILL" in u or "[TODO]" in u or re.search(r"\\bTBD\\b", u):
+        return f"{ctx} contains unfilled placeholder '{s[:40]}'"
+    return None
+
+def audit_table_rows(filename, headers, rows):
+    norm_headers = [str(h or "").strip().lower() for h in headers]
+    has_doc_col = "document" in norm_headers and ("clause" in norm_headers or "kind" in norm_headers)
+    doc_idx = norm_headers.index("document") if "document" in norm_headers else -1
+    bad_hits = 0
+    shifted_rows = 0
+    superseded_rows = 0
+    for r_i, row in enumerate(rows, start=2):
+        if len(row) != len(headers) and len([c for c in row if str(c or "").strip()]) > 0:
+            shifted_rows += 1
+        for c_val in row:
+            msg = check_bad_tokens(c_val, f"{filename} row {r_i}")
+            if msg:
+                bad_hits += 1
+                if bad_hits <= 2:
+                    issues.append(msg)
+        if has_doc_col and doc_idx < len(row):
+            doc_val = str(row[doc_idx] or "").strip()
+            if ROW_ID_IN_DOC_RE.match(doc_val):
+                shifted_rows += 1
+            if "SUPERSEDED" in doc_val.upper() or "OTHER_SCOPE" in doc_val.upper():
+                superseded_rows += 1
+    if bad_hits > 2:
+        issues.append(f"{filename} has {bad_hits} total placeholder/NaN cells")
+    if shifted_rows > 0:
+        issues.append(f"{filename} has {shifted_rows} column-shifted row(s) (check column alignment vs headers {headers[:6]})")
+    if superseded_rows > 0:
+        issues.append(f"{filename} contains {superseded_rows} SUPERSEDED/OTHER_SCOPE citation(s) in active register")
+
+def check_single_file(path_obj, label, require_nonempty=True):
+    name = label or path_obj.name
+    if not path_obj.is_file():
+        issues.append(f"Deliverable missing: {name}")
+        return
+    size = path_obj.stat().st_size
+    if size == 0:
+        issues.append(f"Deliverable is empty (0 bytes): {name}")
+        return
+    lower = name.lower()
+    if lower.endswith(".py"):
+        try:
+            py_compile.compile(str(path_obj), doraise=True)
+        except Exception as exc:
+            issues.append(f"Python syntax error in {name}: {exc}")
+    elif lower.endswith(".csv"):
+        try:
+            with open(path_obj, newline="", encoding="utf-8", errors="replace") as f:
+                rows = list(csv.reader(f))
+            if len(rows) <= 1 and require_nonempty:
+                issues.append(f"{name} has only header row or is empty (rows: {len(rows)})")
+            elif len(rows) > 1:
+                audit_table_rows(name, rows[0], [r for r in rows[1:] if any(str(c).strip() for c in r)])
+        except Exception as exc:
+            issues.append(f"Failed parsing CSV {name}: {exc}")
+    elif lower.endswith(".xlsx"):
+        try:
+            import openpyxl
+            wb = openpyxl.load_workbook(str(path_obj), data_only=False)
+            total_data_rows = 0
+            for ws_name in wb.sheetnames:
+                ws = wb[ws_name]
+                rows = [list(r) for r in ws.iter_rows(values_only=True) if any(v is not None and str(v).strip() != "" for v in r)]
+                if len(rows) > 1:
+                    total_data_rows += len(rows) - 1
+                    audit_table_rows(f"{name}:{ws_name}", rows[0], rows[1:])
+            if total_data_rows == 0 and require_nonempty:
+                issues.append(f"{name} workbook has no populated data rows")
+        except ImportError:
+            pass
+        except Exception as exc:
+            issues.append(f"Failed loading XLSX {name}: {exc}")
+    elif lower.endswith(".md"):
+        if path_obj.name != "recon_summary.md":
+            txt = path_obj.read_text(encoding="utf-8", errors="replace")
+            wc = len(txt.split())
+            if wc < 200 and require_nonempty:
+                issues.append(f"{name} has {wc} words (minimum recommended is 200 words)")
+            if re.search(r"\\bTBD\\b|<fill\\s*in>|\\[TODO\\]", txt, re.I):
+                issues.append(f"{name} contains placeholder text (TBD / TODO / <fill in>)")
+    elif lower.endswith(".json"):
+        try:
+            data = json.loads(path_obj.read_text(encoding="utf-8"))
+            if not data and require_nonempty:
+                issues.append(f"{name} contains empty JSON root")
+            elif isinstance(data, dict) and "zone_lifts" in data:
+                zl = data.get("zone_lifts") or {}
+                if not zl:
+                    issues.append(f"{name} has empty zone_lifts")
+                else:
+                    empty_designs = [k for k, v in zl.items() if isinstance(v, dict) and (not v.get("shoring") or not v.get("scaffold"))]
+                    if empty_designs:
+                        issues.append(f"{name} has {len(empty_designs)} zone lift(s) with empty shoring or scaffold designs")
+            raw_json = json.dumps(data)
+            if re.search(r'"(TBD|<fill[^"]*|\\[TODO\\])"', raw_json, re.I):
+                issues.append(f"{name} contains unresolved placeholder values")
+        except Exception as exc:
+            issues.append(f"Invalid JSON in {name}: {exc}")
+    elif lower.endswith((".dxf", ".docx", ".ifc")) and size < 100:
+        issues.append(f"{name} appears incomplete ({size} bytes)")
+
+sub_files = cfg.get("subFiles", [])
+for target in cfg.get("primaryTargets", []):
+    t_path = pathlib.Path(target)
+    if not t_path.is_file():
+        issues.append(f"Target deliverable missing: {target}")
+        continue
+    if target.endswith(".zip"):
+        out_dir = t_path.parent
+        # Check zip integrity & contents
+        try:
+            with zipfile.ZipFile(t_path, "r") as zf:
+                bad_zip = zf.testzip()
+                if bad_zip is not None:
+                    issues.append(f"Zip {target} corrupted at entry: {bad_zip}")
+                names = set(zf.namelist())
+                for sub in sub_files:
+                    fname = sub["filename"]
+                    if not any(n.endswith(fname) for n in names):
+                        issues.append(f"Zip {target} is missing required subfile: {fname}")
+        except Exception as exc:
+            issues.append(f"Target zip corrupted ({target}): {exc}")
+
+        # Audit required subfiles on disk AND all key deliverable extensions in out_dir
+        checked = set()
+        for sub in sub_files:
+            fp = out_dir / sub["filename"]
+            checked.add(fp.resolve())
+            check_single_file(fp, sub["filename"])
+        if out_dir.exists():
+            for fp in out_dir.rglob("*"):
+                if fp.is_file() and fp != t_path and not fp.name.startswith(".") and fp.suffix.lower() in {".csv", ".xlsx", ".json", ".py", ".md", ".dxf", ".docx", ".ifc"}:
+                    if fp.resolve() not in checked:
+                        check_single_file(fp, fp.name, require_nonempty=False)
     else:
-        print('OK')
-" 2>/dev/null || echo "ERR"`,
-            timeout_sec: 10,
-          });
-          if (jsonCheck.output?.includes("EMPTY_ROOT")) {
-            issues.push(`${sub.filename} has empty root JSON or no zone_lifts defined`);
-          } else if (jsonCheck.output?.includes("MISSING_DESIGNS")) {
-            issues.push(`${sub.filename} has zone lifts with empty '{}' shoring or scaffold designs; populate actual catalogue parameters for all zone lifts`);
-          }
-        }
-      }
+        check_single_file(t_path, target)
 
-      // Check zip integrity and presence of subfiles
-      const zipCheck = await task.request({
-        type: "exec",
-        command: `unzip -l "${target}"`,
-        timeout_sec: 20,
-      });
-      if (zipCheck.exit_code !== 0) {
-        issues.push(`Target zip corrupted: ${target}`);
-      } else {
-        for (const sub of subFiles) {
-          if (!zipCheck.output.includes(sub.filename)) {
-            issues.push(`Zip ${target} is missing required subfile: ${sub.filename}`);
-          }
-        }
+print(json.dumps(issues))
+PY_VERIFY_EOF`;
+
+  const res = await task.request({
+    type: "exec",
+    command: verifyScript,
+    timeout_sec: 30,
+  });
+
+  if (res.output) {
+    const lines = res.output.trim().split(/\r?\n/);
+    for (let i = lines.length - 1; i >= 0; i--) {
+      try {
+        const parsed = JSON.parse(lines[i]);
+        if (Array.isArray(parsed)) return parsed;
+      } catch {
+        // ignore non-JSON lines if any
       }
     }
   }
-  return issues;
+  return [];
 }

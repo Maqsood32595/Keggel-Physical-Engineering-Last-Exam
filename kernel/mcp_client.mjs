@@ -34,19 +34,46 @@ export class McpClient {
 
     if (!res.ok) throw new Error(`MCP HTTP error (${res.status}): ${res.error || "failed"}`);
 
-    if (res.headers && res.headers["mcp-session-id"]) {
-      this.sessionId = res.headers["mcp-session-id"];
+    if (res.headers) {
+      const sessionKey = Object.keys(res.headers).find((k) => k.toLowerCase() === "mcp-session-id");
+      if (sessionKey && res.headers[sessionKey]) {
+        this.sessionId = res.headers[sessionKey];
+      }
     }
 
-    const resBody = Buffer.from(res.body_b64 || "", "base64").toString("utf-8");
+    const resBody = Buffer.from(res.body_b64 || "", "base64").toString("utf-8").trim();
     let json;
     try {
       json = JSON.parse(resBody);
     } catch {
-      // Parse SSE if formatted as SSE
-      const match = resBody.match(/data:\s*({.*})/);
-      if (match) json = JSON.parse(match[1]);
-      else throw new Error(`Cannot parse MCP response: ${resBody.slice(0, 200)}`);
+      // Parse SSE event stream payloads cleanly (supports multi-line data blocks)
+      const dataLines = [];
+      for (const line of resBody.split(/\r?\n/)) {
+        if (line.startsWith("data:")) {
+          const payload = line.slice(5).trim();
+          if (payload && payload !== "[DONE]") dataLines.push(payload);
+        }
+      }
+      for (let i = dataLines.length - 1; i >= 0; i--) {
+        try {
+          json = JSON.parse(dataLines[i]);
+          break;
+        } catch {
+          // try combining adjacent lines if JSON spans multiple data: events
+        }
+      }
+      if (!json && dataLines.length > 0) {
+        try {
+          json = JSON.parse(dataLines.join("\n"));
+        } catch {
+          // fall through to error
+        }
+      }
+      if (!json) {
+        const match = resBody.match(/data:\s*(\{[\s\S]*\})/);
+        if (match) json = JSON.parse(match[1]);
+        else throw new Error(`Cannot parse MCP response: ${resBody.slice(0, 200)}`);
+      }
     }
 
     if (json.error) throw new Error(`MCP RPC error: ${JSON.stringify(json.error)}`);
