@@ -1,11 +1,11 @@
 {
   "format": 1,
   "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-  "created": "2026-11-11T10:21:18Z",
+  "created": "2026-11-11T12:30:28Z",
   "harness": {
     "name": "fractal-engineering-harness",
-    "model_api": "openai-compatible/nvidia/nemotron-3-ultra-550b-a55b:free",
-    "tree": "6be6977d3521f7c14b800ff3226d1a073930389634c4beef715be229c62ce5a3",
+    "model_api": "openai-compatible/nvidia/nemotron-3.5-super-vl:free",
+    "tree": "7ef0227f4adcf789446b0677d55aac4df462f666be3b5bb3f61ce177ca38cfc5",
     "files": {
       ".gitignore": "100644 097dbf358af505c6cf0ff5e6e36e5afd9a4c57c5",
       "README.md": "100644 818fc2bfedb89ff62bf3de519ce07bca114bade2",
@@ -15,33 +15,19 @@
       "package-lock.json": "100644 d46395afe49677e9f0b84c2aa9980f731481e43c",
       "package.json": "100644 de170e3c6cf4a1d51a6f9b91549b7fa97b0f0dd8",
       "serve.mjs": "100644 97655bea7b6b67053b6b390a3daab23f9767128e",
-      "submission.yaml": "100644 fc8d7f4d0c4886346c991dd61dac486fd28c9acc"
+      "submission.yaml": "100644 9384896e9c8fa696b7af2ad38a4e8db26a78b811"
     },
-    "commit": "f414c4c90f3eaa1c6d7c4bc0a3e945bde6d4c319",
-    "dirty": true
+    "commit": "e92d0bde66fa2b254834d4e9356158159b63fda6",
+    "dirty": false
   },
   "tasks": {
-    "frame-extension-method": {
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-      "run": "fractal-engineering-harness-20261111-072059",
-      "trial": "frame-extension-method__Zxj6Zav",
-      "ended": "ok",
-      "reward": 0.1996,
-      "tree": "2a1e235fce1b0ced11e9e2a3c927134f22808ce02573af13718e6f708cafb6bc",
-      "files": {
-        "filesystem/field_eng__constructability_4d__blind/output/submission.zip": "0e488ed0f2090a7415fda3bdb6ae44de9aa76014"
-      },
-      "final_message": "12b495fdd4136f72da6639d430b7951dd79c3e1b",
-      "deleted": [],
-      "skipped": []
-    },
     "fire-test-validation-memo": {
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "run": "fractal-engineering-harness-20261111-153339",
       "trial": "fire-test-validation-memo__UjFCTQL",
       "ended": "ok",
       "reward": 1.0,
       "tree": "6be6977d3521f7c14b800ff3226d1a073930389634c4beef715be229c62ce5a3",
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
         "app/files/.fractal/slices/slice_01_recon/feature.manifest.json": "1fc67ec4a69d6f15216c2ac5acd041040304d65c",
         "app/files/.fractal/slices/slice_02_execution/feature.manifest.json": "a75c3898f97d4a7a14203901c3a36680256c9949",
@@ -51,6 +37,20 @@
         "app/files/output_validation_memo.py": "c595a63a13d6406851c6c408bdbc2f8c0467dc3e"
       },
       "final_message": "5f1419566e01394b5afa7074cf6c270f8794422b",
+      "deleted": [],
+      "skipped": []
+    },
+    "frame-extension-method": {
+      "run": "fractal-engineering-harness-20261111-172425",
+      "trial": "frame-extension-method__tnjYNFu",
+      "ended": "ok",
+      "reward": 0.2667,
+      "tree": "7ef0227f4adcf789446b0677d55aac4df462f666be3b5bb3f61ce177ca38cfc5",
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
+      "files": {
+        "filesystem/field_eng__constructability_4d__blind/output/submission.zip": "1f84884556901184e1e383ae074f544d0625d773"
+      },
+      "final_message": "6f1f4ab1df588aad797415fa72e19b6d1b870d28",
       "deleted": [],
       "skipped": []
     }
