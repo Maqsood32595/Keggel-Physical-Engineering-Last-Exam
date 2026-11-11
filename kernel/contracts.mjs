@@ -3,7 +3,7 @@
 // contracts.mjs: Implements Fractal Kernel Contract Validation & Hard-Gate Verification
 // for Physical-Engineering's Last Exam (PLE).
 
-export function parseDeliverables(instruction, workdir = "/app") {
+export function parseDeliverables(instruction, workdir = "/filesystem") {
   const deliverables = new Set();
   
   // 1. Check for explicit output file paths in instructions
@@ -38,6 +38,7 @@ export function parseDeliverables(instruction, workdir = "/app") {
   return {
     primaryTargets: Array.from(deliverables),
     subFiles,
+    workdir,
   };
 }
 
@@ -46,7 +47,7 @@ export function parseDeliverables(instruction, workdir = "/app") {
  * The benchmark strictly states:
  * "Create a complete submission early, then improve it in place. The last file on disk is graded."
  */
-export async function createEarlySkeleton(task, { primaryTargets, subFiles }) {
+export async function createEarlySkeleton(task, { primaryTargets, subFiles, workdir }) {
   for (const target of primaryTargets) {
     if (target.endsWith(".zip")) {
       const outputDir = target.substring(0, target.lastIndexOf("/"));
@@ -66,7 +67,7 @@ export async function createEarlySkeleton(task, { primaryTargets, subFiles }) {
       }
       task.send({ type: "log", text: `[FractalKernel] Bootstrapping early deliverable skeleton in ${outputDir}` });
       await task.request({ type: "exec", command: script, timeout_sec: 30 });
-      await syncDeliverablesToZip(task, { primaryTargets: [target] });
+      await syncDeliverablesToZip(task, { primaryTargets: [target], workdir });
     } else if (target.endsWith(".py")) {
       const script = `mkdir -p "$(dirname "${target}")" && test -f "${target}" || echo '# Solution script' > "${target}"`;
       await task.request({ type: "exec", command: script, timeout_sec: 15 });
@@ -78,24 +79,36 @@ export async function createEarlySkeleton(task, { primaryTargets, subFiles }) {
 }
 
 /**
- * Synchronizes generated files from their output directory into target zip files.
+ * Synchronizes generated files from output directories into target zip files.
+ * Handles automatic path reconciliation across nested task folders and root working directory.
  */
-export async function syncDeliverablesToZip(task, { primaryTargets }) {
+export async function syncDeliverablesToZip(task, { primaryTargets, workdir = "/filesystem" }) {
   for (const target of primaryTargets) {
     if (!target.endsWith(".zip")) continue;
     const outputDir = target.substring(0, target.lastIndexOf("/"));
     const syncScript = `python3 -I -c "
-import pathlib, zipfile, sys
+import pathlib, zipfile, shutil, sys
+
 out_dir = pathlib.Path('${outputDir}')
 zip_path = pathlib.Path('${target}')
-if not out_dir.exists():
-    sys.exit(0)
+work_out = pathlib.Path('${workdir}') / 'output'
+
+out_dir.mkdir(parents=True, exist_ok=True)
+
+# Reconcile files: If files were generated under workdir/output instead of nested out_dir, mirror them
+if work_out.exists() and work_out.resolve() != out_dir.resolve():
+    for f in work_out.glob('*'):
+        if f.is_file() and not f.name.endswith('.zip') and not f.name.startswith('.'):
+            target_file = out_dir / f.name
+            if not target_file.exists() or f.stat().st_size > target_file.stat().st_size:
+                shutil.copy2(f, target_file)
+
 files = [f for f in out_dir.rglob('*') if f.is_file() and f != zip_path and not f.name.startswith('.') and f.suffix != '.zip']
 if files:
     with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as z:
         for f in files:
             z.write(f, f.relative_to(out_dir))
-    print(f'Synchronized {len(files)} files to {zip_path}')
+    print(f'Synchronized {len(files)} files into {zip_path}')
 "`;
     const res = await task.request({
       type: "exec",
@@ -111,7 +124,7 @@ if files:
 /**
  * Hard-gate verification: inspects deliverables on disk and inside zip.
  */
-export async function verifyDeliverables(task, { primaryTargets, subFiles }) {
+export async function verifyDeliverables(task, { primaryTargets, subFiles, workdir = "/filesystem" }) {
   const issues = [];
   
   for (const target of primaryTargets) {
@@ -154,11 +167,25 @@ export async function verifyDeliverables(task, { primaryTargets, subFiles }) {
         } else if (sub.filename.endsWith(".json")) {
           const jsonCheck = await task.request({
             type: "exec",
-            command: `python3 -I -c "import json; d=json.load(open('${filePath}')); print('KEYS:', len(d.get('zone_lifts', d)))" 2>/dev/null || echo "ERR"`,
+            command: `python3 -I -c "
+import json
+d = json.load(open('${filePath}'))
+zl = d.get('zone_lifts', {})
+if not zl:
+    print('EMPTY_ROOT')
+else:
+    empty_designs = [k for k, v in zl.items() if not v.get('shoring') or not v.get('scaffold')]
+    if empty_designs:
+        print('MISSING_DESIGNS:', len(empty_designs))
+    else:
+        print('OK')
+" 2>/dev/null || echo "ERR"`,
             timeout_sec: 10,
           });
-          if (!jsonCheck.output || jsonCheck.output.includes("ERR") || jsonCheck.output.includes("KEYS: 0")) {
-            issues.push(`${sub.filename} on disk has empty or invalid JSON structure`);
+          if (jsonCheck.output?.includes("EMPTY_ROOT")) {
+            issues.push(`${sub.filename} has empty root JSON or no zone_lifts defined`);
+          } else if (jsonCheck.output?.includes("MISSING_DESIGNS")) {
+            issues.push(`${sub.filename} has zone lifts with empty '{}' shoring or scaffold designs; populate actual catalogue parameters for all zone lifts`);
           }
         }
       }
