@@ -50,30 +50,23 @@ export async function createEarlySkeleton(task, { primaryTargets, subFiles }) {
   for (const target of primaryTargets) {
     if (target.endsWith(".zip")) {
       const outputDir = target.substring(0, target.lastIndexOf("/"));
-      // Create output dir and minimal placeholder subfiles
       let script = `mkdir -p "${outputDir}" && cd "${outputDir}"\n`;
       for (const item of subFiles) {
         if (item.filename.endsWith(".csv")) {
-          // If columns are mentioned, create a header row
           const colsMatch = item.requirements.match(/`([^`]+)`/g);
           const headers = colsMatch ? colsMatch.map(c => c.replace(/`/g, "")).join(",") : "id,name,value";
-          script += `cat << 'EOF' > "${item.filename}"\n${headers}\nEOF\n`;
+          script += `test -f "${item.filename}" || cat << 'EOF' > "${item.filename}"\n${headers}\nEOF\n`;
         } else if (item.filename.endsWith(".json")) {
-          script += `cat << 'EOF' > "${item.filename}"\n{}\nEOF\n`;
+          script += `test -f "${item.filename}" || echo '{}' > "${item.filename}"\n`;
         } else if (item.filename.endsWith(".md")) {
-          script += `cat << 'EOF' > "${item.filename}"\n# Method Note\n\nInitial draft.\nEOF\n`;
+          script += `test -f "${item.filename}" || cat << 'EOF' > "${item.filename}"\n# Method Note\n\nInitial placeholder draft.\nEOF\n`;
         } else {
-          script += `touch "${item.filename}"\n`;
+          script += `test -f "${item.filename}" || touch "${item.filename}"\n`;
         }
       }
-      // Zip them into submission.zip
-      if (subFiles.length > 0) {
-        script += `zip -q "${target}" ${subFiles.map(s => `"${s.filename}"`).join(" ")} || true\n`;
-      } else {
-        script += `echo "placeholder" > placeholder.txt && zip -q "${target}" placeholder.txt || true\n`;
-      }
-      task.send({ type: "log", text: `[FractalKernel] Bootstrapping early deliverable skeleton: ${target}` });
+      task.send({ type: "log", text: `[FractalKernel] Bootstrapping early deliverable skeleton in ${outputDir}` });
       await task.request({ type: "exec", command: script, timeout_sec: 30 });
+      await syncDeliverablesToZip(task, { primaryTargets: [target] });
     } else if (target.endsWith(".py")) {
       const script = `mkdir -p "$(dirname "${target}")" && test -f "${target}" || echo '# Solution script' > "${target}"`;
       await task.request({ type: "exec", command: script, timeout_sec: 15 });
@@ -85,10 +78,42 @@ export async function createEarlySkeleton(task, { primaryTargets, subFiles }) {
 }
 
 /**
- * Hard-gate verification: inspects deliverables before submitting.
+ * Synchronizes generated files from their output directory into target zip files.
+ */
+export async function syncDeliverablesToZip(task, { primaryTargets }) {
+  for (const target of primaryTargets) {
+    if (!target.endsWith(".zip")) continue;
+    const outputDir = target.substring(0, target.lastIndexOf("/"));
+    const syncScript = `python3 -I -c "
+import pathlib, zipfile, sys
+out_dir = pathlib.Path('${outputDir}')
+zip_path = pathlib.Path('${target}')
+if not out_dir.exists():
+    sys.exit(0)
+files = [f for f in out_dir.rglob('*') if f.is_file() and f != zip_path and not f.name.startswith('.') and f.suffix != '.zip']
+if files:
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as z:
+        for f in files:
+            z.write(f, f.relative_to(out_dir))
+    print(f'Synchronized {len(files)} files to {zip_path}')
+"`;
+    const res = await task.request({
+      type: "exec",
+      command: syncScript,
+      timeout_sec: 30,
+    });
+    if (res.output && res.output.includes("Synchronized")) {
+      task.send({ type: "log", text: `[FractalKernel] ${res.output.trim()}` });
+    }
+  }
+}
+
+/**
+ * Hard-gate verification: inspects deliverables on disk and inside zip.
  */
 export async function verifyDeliverables(task, { primaryTargets, subFiles }) {
   const issues = [];
+  
   for (const target of primaryTargets) {
     const check = await task.request({
       type: "exec",
@@ -101,6 +126,44 @@ export async function verifyDeliverables(task, { primaryTargets, subFiles }) {
     }
 
     if (target.endsWith(".zip")) {
+      const outputDir = target.substring(0, target.lastIndexOf("/"));
+      
+      // Check each subfile directly on disk
+      for (const sub of subFiles) {
+        const filePath = `${outputDir}/${sub.filename}`;
+        if (sub.filename.endsWith(".csv")) {
+          const linesCheck = await task.request({
+            type: "exec",
+            command: `test -f "${filePath}" && wc -l < "${filePath}" || echo "0"`,
+            timeout_sec: 10,
+          });
+          const lineCount = parseInt(linesCheck.output?.trim() || "0", 10);
+          if (lineCount <= 1) {
+            issues.push(`${sub.filename} on disk has only header row or is empty (line count: ${lineCount})`);
+          }
+        } else if (sub.filename.endsWith(".md")) {
+          const wordsCheck = await task.request({
+            type: "exec",
+            command: `test -f "${filePath}" && wc -w < "${filePath}" || echo "0"`,
+            timeout_sec: 10,
+          });
+          const wordCount = parseInt(wordsCheck.output?.trim() || "0", 10);
+          if (wordCount < 200) {
+            issues.push(`${sub.filename} on disk has ${wordCount} words (minimum required is 200 words)`);
+          }
+        } else if (sub.filename.endsWith(".json")) {
+          const jsonCheck = await task.request({
+            type: "exec",
+            command: `python3 -I -c "import json; d=json.load(open('${filePath}')); print('KEYS:', len(d.get('zone_lifts', d)))" 2>/dev/null || echo "ERR"`,
+            timeout_sec: 10,
+          });
+          if (!jsonCheck.output || jsonCheck.output.includes("ERR") || jsonCheck.output.includes("KEYS: 0")) {
+            issues.push(`${sub.filename} on disk has empty or invalid JSON structure`);
+          }
+        }
+      }
+
+      // Check zip integrity and presence of subfiles
       const zipCheck = await task.request({
         type: "exec",
         command: `unzip -l "${target}"`,

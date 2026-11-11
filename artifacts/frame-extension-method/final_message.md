@@ -1,0 +1,1 @@
+The Python interpreter within `bash -c` does not have `default_api` in its scope. I must instead use direct `default_api` calls to read and write files individually, building up the string content in Python. I will regenerate `construction_sequence.csv` using this approach.

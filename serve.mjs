@@ -17,7 +17,7 @@ import { randomUUID } from "node:crypto";
 import { setTimeout as sleep } from "node:timers/promises";
 import { EnvHttpProxyAgent, fetch } from "undici";
 import { WebSocketServer } from "ws";
-import { parseDeliverables, createEarlySkeleton, verifyDeliverables } from "./kernel/contracts.mjs";
+import { parseDeliverables, createEarlySkeleton, verifyDeliverables, syncDeliverablesToZip } from "./kernel/contracts.mjs";
 import { ManifestEngine } from "./kernel/manifest_engine.mjs";
 import { McpClient } from "./kernel/mcp_client.mjs";
 
@@ -44,12 +44,18 @@ const dispatcher = new EnvHttpProxyAgent({ headersTimeout: IDLE_MS, bodyTimeout:
 const SYSTEM = (workdir) => `You are a licensed professional engineer operating under the Fractal Kernel architecture \
 inside an isolated Linux container with no internet access. Your bash shell starts in ${workdir}.
 
+ENVIRONMENT CAPABILITIES:
+- You have bash access. Use standard Python 3 with pandas, numpy, math, and json to compute exact values and write files.
+- NEVER import 'default_api' inside Python scripts. Write standard standalone Python code.
+- Write and edit deliverable files directly on disk in their target directory (e.g. 'output/').
+- The harness automatically synchronizes and updates target ZIP files (such as 'submission.zip') with the latest files from the output directory.
+
 FRACTAL KERNEL PRINCIPLES:
 1. MANIFEST-DRIVEN EXECUTION: Work systematically by feature slice. Each slice isolates specific deliverables.
 2. COMPUTATION OVER SPECULATION: Calculate all loads, stresses, capacities, and code requirements using Python scripts and verifiable mathematics.
-3. HARD-GATE COMPLIANCE: Zero safety violations. Zero missed deliverables. Check all required columns and headers.
+3. HARD-GATE COMPLIANCE: Zero safety violations. Zero missed deliverables. Every CSV must contain all calculated data rows (never empty headers only). Every method note must exceed 200 words.
 4. ITERATIVE IMPROVEMENT: A baseline deliverable skeleton has already been bootstrapped. Improve each deliverable in-place until fully compliant.
-5. AUDIT BEFORE COMPLETION: Confirm that all required deliverables exist, are non-empty, and conform to the specification.`;
+5. AUDIT BEFORE COMPLETION: The harness will audit all deliverables on disk before submission. If audit gaps are detected, resolve them immediately.`;
 
 const tool = (name, description, ...params) => ({
   type: "function",
@@ -457,16 +463,37 @@ async function solve(task) {
     const text = head + (message.content ?? "");
     if (wrapUp || !message.tool_calls) {
       const cut = finish === "length";
-      if (wrapUp || (message.content && !cut) || nudges === MAX_NUDGES) return;
-      nudges++;
-      head = text;
-      if (message.content) messages.push(message);
-      messages.push({
-        role: "user",
-        content: cut ? "Your reply was cut off; continue where it stopped."
-          : "Continue the task, and finish with your summary.",
-      });
-      continue;
+      if (cut) {
+        nudges++;
+        head = text;
+        if (message.content) messages.push(message);
+        messages.push({ role: "user", content: "Your reply was cut off; continue where it stopped." });
+        continue;
+      }
+
+      // 1. Synchronize all on-disk output files into zip archive deliverables
+      await syncDeliverablesToZip(task, taskAnalysis);
+
+      // 2. Perform Fractal Kernel Hard-Gate Audit
+      const auditIssues = await verifyDeliverables(task, taskAnalysis);
+      if (auditIssues.length > 0 && !wrapUp && nudges < MAX_NUDGES) {
+        nudges++;
+        head = text;
+        task.send({ type: "log", text: `[FractalKernel Audit] ${auditIssues.length} gap(s) found: ${auditIssues.join("; ")}` });
+        if (message.content) messages.push(message);
+        messages.push({
+          role: "user",
+          content: `[FRACTAL KERNEL AUDIT GAPS DETECTED]\n` +
+            `Your deliverables are incomplete or missing required data:\n` +
+            auditIssues.map((issue) => `- ${issue}`).join("\n") +
+            `\n\nFix these issues on disk now using bash/write_file/edit_file, populate all data rows, and confirm when complete.`,
+        });
+        continue;
+      }
+
+      // If wrap-up or all gates pass or max nudges reached, final sync and complete
+      await syncDeliverablesToZip(task, taskAnalysis);
+      return;
     }
 
     nudges = 0;
