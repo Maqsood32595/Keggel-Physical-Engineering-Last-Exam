@@ -1,0 +1,12 @@
+{
+  "id": "slice_03_packaging_and_audit",
+  "name": "Packaging & Hard-Gate Verification",
+  "description": "Package final deliverables (e.g. submission.zip), verify code compliance, and confirm non-empty outputs.",
+  "phase": "audit",
+  "allowedTools": [
+    "bash",
+    "read_file",
+    "write_file"
+  ],
+  "expectedExports": []
+}

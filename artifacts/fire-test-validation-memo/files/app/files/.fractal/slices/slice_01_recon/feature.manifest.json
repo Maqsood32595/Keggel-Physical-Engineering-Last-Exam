@@ -1,0 +1,14 @@
+{
+  "id": "slice_01_recon",
+  "name": "Recon & Constraints Extraction",
+  "description": "Explore workspace documents, specs, code, rules/, catalogue/, and extract all governing clauses, numbers, and hard-gate limits into constraint registers with high recall (>70%).",
+  "phase": "recon",
+  "allowedTools": [
+    "bash",
+    "read_file",
+    "mcp"
+  ],
+  "expectedExports": [
+    "recon_summary.md"
+  ]
+}

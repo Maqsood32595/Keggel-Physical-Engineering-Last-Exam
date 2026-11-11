@@ -1,0 +1,14 @@
+{
+  "id": "slice_02_execution",
+  "name": "Engineering Computation & Deliverables",
+  "description": "Perform physical/structural/electrical calculations and generate required deliverable files. Apply resource leveling (crane shifts <= daily limit, gang caps) and populate all JSON equipment/temporary works with real catalog entries (never empty {}).",
+  "phase": "compute",
+  "allowedTools": [
+    "bash",
+    "read_file",
+    "write_file",
+    "edit_file",
+    "mcp"
+  ],
+  "expectedExports": []
+}
