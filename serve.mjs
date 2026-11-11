@@ -35,7 +35,7 @@ const CONTEXT_FULL =
   /context.?(length|window)|prompt is too long|maximum prompt length|exceed[^.]{0,40}(token|context)/i;
 const BAD_REQUEST = new Set(["invalid_request_error", "context_length_exceeded", "invalid_value", "invalid_prompt"]);
 const CUT_KEEP = 1200;
-const MAX_NUDGES = 3;
+const MAX_NUDGES = 10;
 const MAX_OUTPUT_TOKENS = Number(process.env.MAX_OUTPUT_TOKENS || 32000);
 const MAX_FRAME = 16 << 20;
 const IDLE_MS = Number(process.env.MODEL_IDLE_SEC || 1800) * 1000;
@@ -413,6 +413,7 @@ async function solve(task) {
 
   let nudges = 0, head = "";
   let auditPerformed = false;
+  let forceToolCall = false;
 
   while (true) {
     const left = task.secondsLeft();
@@ -439,8 +440,9 @@ async function solve(task) {
       : AbortSignal.any([task.abort.signal, AbortSignal.timeout(Math.round((left - WRAP_UP_SEC) * 1000))]);
 
     let reply;
+    const toolChoice = wrapUp ? "none" : (forceToolCall ? "required" : "auto");
     try {
-      reply = await chat(task, messages, tools, wrapUp ? "none" : "auto", signal, (content) => {
+      reply = await chat(task, messages, tools, toolChoice, signal, (content) => {
         task.summary = head + content;
       });
     } catch (error) {
@@ -479,6 +481,7 @@ async function solve(task) {
       if (auditIssues.length > 0 && !wrapUp && nudges < MAX_NUDGES) {
         nudges++;
         head = text;
+        forceToolCall = true;
         task.send({ type: "log", text: `[FractalKernel Audit] ${auditIssues.length} gap(s) found: ${auditIssues.join("; ")}` });
         if (message.content) messages.push(message);
         messages.push({
@@ -486,7 +489,7 @@ async function solve(task) {
           content: `[FRACTAL KERNEL AUDIT GAPS DETECTED]\n` +
             `Your deliverables are incomplete or missing required data:\n` +
             auditIssues.map((issue) => `- ${issue}`).join("\n") +
-            `\n\nFix these issues on disk now using bash/write_file/edit_file, populate all data rows, and confirm when complete.`,
+            `\n\nACTION REQUIRED: You MUST immediately invoke a tool (e.g. bash to run python scripts, or write_file) in your next turn to generate all required data. Do NOT reply with conversational text only.`,
         });
         continue;
       }
@@ -497,6 +500,7 @@ async function solve(task) {
     }
 
     nudges = 0;
+    forceToolCall = false;
     head = "";
     messages.push(message);
 
