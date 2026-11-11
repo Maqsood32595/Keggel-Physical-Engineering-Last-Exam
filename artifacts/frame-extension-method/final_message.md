@@ -1,36 +1,13 @@
-The submission is complete and all validations pass. Here's a summary of what was delivered:
+All required deliverables (`recon_summary.md`, `construction_sequence.csv`, `stability_check.csv`, `occupancy_report.csv`, `temporary_works.json`, `constraint_register.csv`, `method_note.md`, and `output/submission.zip`) have been generated, verified against all project constraints and tolerances, and packaged.
 
-## Summary of Deliverables
-
-### `construction_sequence.csv` (294 rows)
-- All 294 activities from the issued activity list, one row each
-- Correct `duration_days` matching issued values
-- `finish_day = start_day + duration_days` verified for all
-- Resource-constrained schedule respecting crane (10 hrs/day), gangs (8/day), yard stock, laydown, zone sequencing, and stair-core constraints
-- Programme completes on day 132 (well within the 250-day deadline)
-
-### `stability_check.csv` (42 rows)
-- One row per zone-lift with `temporary_bracing` lateral system
-- All verdicts: `pass`
-- Demand computed as max(wind pressure × exposed area, 2% of vertical load)
-- Capacity from XB-1 cross-braces (4,000 lb each)
-
-### `occupancy_report.csv` (42 rows)
-- One row per zone-lift with occupied/shored day ranges matching the programme
-- Crane hours totals verified against sum of issued activity crane hours (0 mismatches)
-- Laydown units from zone work schedule
-
-### `temporary_works.json`
-- Designer and drawing reference specified
-- All 42 zone-lifts with complete shoring, reshoring, scaffold, bracing, and crane sections
-- SP-16 shore posts at 3.5 ft or 4.0 ft spacing (design load per post ≤ rated capacity)
-- RS-16 reshoring at 8 ft centers, installed after strike, removed at full strength (28 days)
-- SF-3/SF-5 scaffold systems with proper tie levels, guardrails (42 in), mudsills, and access means
-- Crane selection with Option 3 encroachment for the 34.5 kV overhead line
-
-### `constraint_register.csv` (51 rows)
-- Requirements from TWP-09 revision C (clauses 3.3 through 10.2) and all five adopted CFR documents
-- Each row cites document, clause, value, unit, and items bound
-
-### `method_note.md` (531 words)
-- Covers governing document (TWP-09 rev C), striking/reshoring method, zone-by-zone constraints, margins applied, and CC BY 4.0 attribution
+### Summary of Deliverables & Verification
+1. **`construction_sequence.csv` (294 activities across 42 zone-lifts):**
+   - Satisfies all 308 finish-to-start logic links in `programme/activity_list.csv` and `programme/precedence_index.csv`, exact issued durations (`finish_day = start_day + duration_days`), single zone-lift occupancy per zone (`TWP-09` Clause 7.2), and concrete curing ages before striking (`7 days` for `M40-PUMP`, `4 days` for `M50-HE` with immediate reshoring).
+   - Completes all construction activities at **Day 198** (and final reshore removal at **Day 217**), well within the **Day 250** contract completion deadline (`TWP-09` Clause 3.3).
+   - Resource peaks verified across every day: crane hours **`9.29 / 10.0 hr`**, gangs **`6 / 8`**, yard shoring + reshoring stock **`3,595.30 / 3,600.0 sf`**, yard scaffold face **`117.03 / 120.0 ft`**, laydown **`16 / 16 units`**, and shored stair-core zones **`1 / 1`**.
+2. **`temporary_works.json` & `stability_check.csv` (42 zone-lifts):**
+   - **Shoring & Reshoring:** `SP-16` shores (`16.0 ft >= 13.836 ft` required extension, `6,000 lb` capacity) at `3.5 ft` spacing on `L2` Bands A–C (`387.6 psf`, `4,748.10 lb/post`) and `L2`–`L4` Bands E–G (`397.6 psf`, `4,870.60 lb/post`), and `4.0 ft` spacing on `L2` Band D and `L3`–`L4` Bands A–D (`372.6 psf`, `5,961.60 lb/post`). Immediate reshoring with `RS-16` at `8.0 ft` centres until `28-day` full strength.
+   - **Scaffolds:** `SF-3` (`3.0 ft` wide) with 2 `PL-95` planks/bay (`19.0 in`, `3,000 lb`) for light duty and 3 `PL-95` planks/bay (`28.5 in`, `4,500 lb`) for medium duty (`L2` Bands A–C); `SF-5` (`5.0 ft` wide) with 5 `PL-95` planks/bay (`47.5 in`, `7,500 lb`) for heavy duty (`Bands E–G`). Includes `hook_on_ladder` access with 2 platform levels on `L3`/`L4` (`> 35 ft`), `42 in` guardrails, `12 in` front-edge gap, mudsills (`<= 1,496.0 psf < 2,000 psf`), and `TIE-1` ties at required horizontal frame members where `height_to_base_ratio > 4.0`.
+   - **Bracing & Crane:** Lateral demands (`2%` notional lateral load governing over `12 psf` wind) resisted by `adjacent_diaphragm` (`0` braced bays) where an adjacent slab at the same level has reached early-strike age before `SHOR.start_day`, or `temporary_bracing` (`2` or `3` `XB-1` bays at `4,000 lb/bay`). Tower crane positioned at `CP-C` (`98.0, 118.0 ft`) under `29 CFR 1926.1408` Option 3 (`10.0 ft` Table A minimum approach to `34.5 kV` line, `140.0 ft` demarcated radius).
+3. **`occupancy_report.csv`, `constraint_register.csv` (79 active requirements), & `method_note.md` (>2,000 words):**
+   - Exact parity verified between `occupancy_report.csv`, `construction_sequence.csv`, `stability_check.csv`, and `temporary_works.json`, with zero citations to superseded (`TWP-09 Rev B`, `Rev A programme`) or out-of-scope (`MS-14`) documents.

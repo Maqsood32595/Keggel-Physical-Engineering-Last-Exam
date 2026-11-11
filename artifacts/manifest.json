@@ -1,23 +1,24 @@
 {
   "format": 1,
   "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-  "created": "2026-11-11T13:54:23Z",
+  "created": "2026-11-11T20:04:49Z",
   "harness": {
     "name": "fractal-engineering-harness",
-    "model_api": "openai-compatible/nvidia/nemotron-3.5-super-vl:free",
-    "tree": "7ef0227f4adcf789446b0677d55aac4df462f666be3b5bb3f61ce177ca38cfc5",
+    "model_api": "gemini/gemini-4-argon",
+    "tree": "aa1e80bb87fecb773d9dfb7d68ced576057184b6a8c2402c61d1583ef4409353",
     "files": {
       ".gitignore": "100644 097dbf358af505c6cf0ff5e6e36e5afd9a4c57c5",
+      "LICENSE": "100644 dd2b96eb0641dbd02ca926d8eda8446e9a3f8d38",
       "README.md": "100644 818fc2bfedb89ff62bf3de519ce07bca114bade2",
-      "kernel/contracts.mjs": "100644 879a19473883871ac438599c56fe6e483f830841",
-      "kernel/manifest_engine.mjs": "100644 704da663e8b392989ed24eb36be58c1a963d580a",
-      "kernel/mcp_client.mjs": "100644 7720c7cb7f70faa65c882a9f65100a01655516fc",
+      "kernel/contracts.mjs": "100644 3600172c814a0c21155477ba09d24938c2c5969e",
+      "kernel/manifest_engine.mjs": "100644 1a90d0620bd84300289ebe7b04c739da138d275f",
+      "kernel/mcp_client.mjs": "100644 67299a1acd2237e5f545f920aea0e88c11034cc7",
       "package-lock.json": "100644 d46395afe49677e9f0b84c2aa9980f731481e43c",
       "package.json": "100644 de170e3c6cf4a1d51a6f9b91549b7fa97b0f0dd8",
-      "serve.mjs": "100644 97655bea7b6b67053b6b390a3daab23f9767128e",
-      "submission.yaml": "100644 9384896e9c8fa696b7af2ad38a4e8db26a78b811"
+      "serve.mjs": "100644 c5b8c55a1ad7929ae56b3467dc66b5a8f07a227b",
+      "submission.yaml": "100644 a53721bc5512a9baf45051b31b06988f109de061"
     },
-    "commit": "4ef3966eab7f030bb8ee1a7f862f0bd4aab7e9e6",
+    "commit": "fa9b416c6abe768d38f15bfa4c17aefa99ab5461",
     "dirty": false
   },
   "tasks": {
@@ -40,31 +41,31 @@
       "deleted": [],
       "skipped": []
     },
-    "frame-extension-method": {
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-      "run": "fractal-engineering-harness-20261111-172425",
-      "trial": "frame-extension-method__tnjYNFu",
-      "ended": "ok",
-      "reward": 0.2667,
-      "tree": "7ef0227f4adcf789446b0677d55aac4df462f666be3b5bb3f61ce177ca38cfc5",
-      "files": {
-        "filesystem/field_eng__constructability_4d__blind/output/submission.zip": "1f84884556901184e1e383ae074f544d0625d773"
-      },
-      "final_message": "6f1f4ab1df588aad797415fa72e19b6d1b870d28",
-      "deleted": [],
-      "skipped": []
-    },
     "cooling-water-flush-plan": {
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "run": "fractal-engineering-harness-20261111-181728",
       "trial": "cooling-water-flush-plan__XQ2JYem",
       "ended": "ok",
       "reward": 0.180556,
       "tree": "7ef0227f4adcf789446b0677d55aac4df462f666be3b5bb3f61ce177ca38cfc5",
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
         "filesystem/final_batch4__mechanical_task5_pcw_flush_mop__blind/output/submission.zip": "0f0c8bd6b601c7d8c61d0b419fdd3e48bf8b3d23"
       },
       "final_message": "e3b8efba9e511726e255074cba7ab0d543a9b950",
+      "deleted": [],
+      "skipped": []
+    },
+    "frame-extension-method": {
+      "run": "fractal-engineering-harness-20261112-010420",
+      "trial": "frame-extension-method__SRgEAJi",
+      "ended": "ok",
+      "reward": 0.369,
+      "tree": "aa1e80bb87fecb773d9dfb7d68ced576057184b6a8c2402c61d1583ef4409353",
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
+      "files": {
+        "filesystem/field_eng__constructability_4d__blind/output/submission.zip": "df38065cfd7c2392f7e2b60ac53367328b984b3f"
+      },
+      "final_message": "5156577b3b90f4a02cc0b807ad28b6c774e16635",
       "deleted": [],
       "skipped": []
     }
