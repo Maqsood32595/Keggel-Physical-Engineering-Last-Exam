@@ -1,29 +1,17 @@
-The submission is complete. Here's a summary of what was delivered:
+The complete Process Cooling Water (PCW) cleaning, flushing, passivation, and turnover package for Tull Creek Data Hall has been generated, verified, and packaged into `/filesystem/final_batch4__mechanical_task5_pcw_flush_mop__blind/output/submission.zip` (along with the individual deliverables in `output/` and `recon_summary.md`).
 
-## Submission Summary — `output/submission.zip`
-
-**7 deliverable files** all present and validated:
-
-| File | Rows | Status |
-|------|------|--------|
-| `flush_plan.csv` | 56 | All 7 stages × 8 circuits, no fatal values, valid skid IDs |
-| `chemistry_plan.csv` | 28 | Cleaning products, dispersant, passivation inhibitor, azole |
-| `acceptance_matrix.csv` | 64 | RINSE/PASSIVATION/DISCHARGE/TURNOVER gates |
-| `schedule.csv` | 103 | Resource-constrained (2 crews, 3 skids), no overlaps |
-| `resources.json` | — | Skid assignment, water/discharge profiles, power check, chemical orders, cost |
-| `constraint_register.csv` | 78 | Real project documents and clauses, no superseded citations |
-| `MOP.md` | — | Execution narrative, design basis, governing constraints/margins, conflict resolution, defects, safety |
-
-## Key Engineering Results
-
-- **Circuit mapping**: Lines → circuits from P&ID drawings M-PID-101 through M-PID-104
-- **Skid assignments**: FS-1200-A for C1/C2/C3/C5 (high-flow), FS-600-A/B for C4/C6/C7/C8
-- **All head checks pass**: Each skid develops required head at assigned flow with margin
-- **Treatment**: Polysilicate-azole for all circuits (UFC Table 6-2/5-11), TA-90 azole where copper wetted (C4-C7), CL-210 for galvanized C8
-- **Rinse displacements**: n_r = 6-9 per UFC displacement model, all meeting ≤550 uS/cm criterion
-- **Turnover**: DRAIN_AND_REFILL for all circuits (maintenance residual < passivation residual for polysilicate)
-- **Cascade**: 4 pairs (C1→C7, C5→C6, C3→C8, C4→C2), saving 19,700 gal
-- **Discharge**: 540,000 gal to sewer (at cap), 117,101 gal hauled
-- **Total cost**: $74,768.41
-- **Schedule**: Completes at hour 621 (day 26), well within TM-4 deadline (hour 1128)
-- **No fatal values** anywhere in numeric columns; no crew/skid overlaps; daily water draw ≤ 92,000 gal
+### Summary of Deliverables & Engineering Verification
+1. **`flush_plan.csv` (52 rows)**:
+   - Covers all 8 tie-in-bounded circuits (`C1`–`C8`), with `HYDRO` included only for `C3`, `C5`, `C6`, and `C7` (`127.5 psig` for `2.0 h`; `C1`, `C2`, `C4`, and `C8` are accepted on the basis of verified on-file pressure recorder charts `TR-0412`, `TR-0413`, `TR-0415`, and `TR-0419` per `Section 01 91 13` cl. 1.3 and `Section 23 21 16` cl. 3.3).
+   - Assigns `FS-1200-A` to `C1` (`1,200 gpm`), `C2` (`650 gpm`), and `C3` (`750 gpm`), and `FS-600-A` to `C4` (`400 gpm`), `C5` (`477 gpm`), `C6` (`400 gpm`), `C7` (`320 gpm`), and `C8` (`200 gpm`), satisfying minimum flushing velocities (`>= 4.0 ft/s` on PHE/cold-plate circuits `C2–C6` and `>= 3.28 ft/s` on `C1, C7, C8`), Colebrook-White / Darcy-Weisbach head limits, and in-path equipment limits (`ST-601` $\Delta P = 16.67 \le 25.0\text{ ft w.c.}$).
+   - Implements 6 rinse cascades (`C1 -> C5 -> C3 -> C2 -> C6 -> C7` and `C4 -> C8`), saving `32,308.91 gal` of makeup water and sewer effluent, and routes metal-exceeding `CHEM_CLEAN` batches (`C4, C5, C7, C8` = `22,239.18 gal`) to `HAUL` while routing `506,467.81 gal <= 540,000 gal` to `SEWER` (`MH-14`).
+2. **`chemistry_plan.csv` (40 rows)**:
+   - Pre-operational cleaning with `CL-100` (`1.5 gal/1,000 gal` $V_s$) on `C1–C5, C7` and `CL-210` (`2.0 gal/1,000 gal` $V_s$) on `C6` (aluminium) and `C8` (galvanized), plus `PD-45` polyacrylate dispersant (`4.0 ppm` active polymer on $V_s$).
+   - Passivation (`14 days = 336.0 h` hold per `UFC 3-230-13` Tables 5-14 & 5-15) and `RETAIN_AND_TOP_UP` turnover (`FINAL_FILL`) using `Molybdate` / `Molybdate-Azole` (`MO-500` + `TA-90`) on `C1–C5, C7` and `Polysilicate-Azole` / `Polysilicate` (`PS-330` + `TA-90`) on `C6, C8` (`NB-700` and `SA-100` rejected due to makeup water $\text{Cl} + \text{SO}_4 = 860\text{ mg/L} > 800\text{ ppm}$).
+3. **`acceptance_matrix.csv` (72 rows)**:
+   - Tabulates all required thresholds and governing citations for `RINSE`, `PASSIVATION`, `DISCHARGE`, and `TURNOVER` gates across all 8 circuits.
+4. **`schedule.csv` (59 rows) & `resources.json`**:
+   - Avoids utility main flushing/isolation windows (`SI-04` Days 2, 3, and 6) and respects `FS-1200-A` delivery at hour 48 (`SI-05`), completing all milestones ahead of `CX-01` deadlines (`TM-1` at `104.0 h <= 144 h`, `TM-2` at `380.54 h <= 528 h`, `TM-3` at `718.97 h <= 1056 h`, `TM-4` at `724.47 h <= 1128 h`).
+   - Total programme cost: **`$42,655.05`** (`$7,750.00` skid rental, `$16,400.00` crew shifts, `$4,297.82` water, `$6,167.23` effluent, `$8,040.00` chemicals).
+5. **`constraint_register.csv` (173 atomic rows) & `MOP.md` (4,382 words)**:
+   - Decomposes all applied requirements atomically with zero citations to superseded, cancelled, or out-of-scope documents, and documents all governing constraint margins, conflict resolutions, document defects, lump-sum mobilisation items, and `29 CFR 1910.1200` / `VD-07` hazard communication procedures.

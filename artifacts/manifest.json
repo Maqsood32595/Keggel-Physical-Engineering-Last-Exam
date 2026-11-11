@@ -1,7 +1,7 @@
 {
   "format": 1,
   "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-  "created": "2026-11-11T21:45:40Z",
+  "created": "2026-11-11T23:21:41Z",
   "harness": {
     "name": "fractal-engineering-harness",
     "model_api": "gemini/gemini-4-argon",
@@ -18,7 +18,7 @@
       "serve.mjs": "100644 3658ec847b18c92914e23cf7990c9f458c3bd20a",
       "submission.yaml": "100644 a53721bc5512a9baf45051b31b06988f109de061"
     },
-    "commit": "639c915d04a28a1363b2d664684585c7d1c38c7c",
+    "commit": "6d95a701703d3f26d631ada7bd88787dc1f8638a",
     "dirty": false
   },
   "tasks": {
@@ -41,31 +41,31 @@
       "deleted": [],
       "skipped": []
     },
-    "cooling-water-flush-plan": {
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-      "run": "fractal-engineering-harness-20261111-181728",
-      "trial": "cooling-water-flush-plan__XQ2JYem",
-      "ended": "ok",
-      "reward": 0.180556,
-      "tree": "7ef0227f4adcf789446b0677d55aac4df462f666be3b5bb3f61ce177ca38cfc5",
-      "files": {
-        "filesystem/final_batch4__mechanical_task5_pcw_flush_mop__blind/output/submission.zip": "0f0c8bd6b601c7d8c61d0b419fdd3e48bf8b3d23"
-      },
-      "final_message": "e3b8efba9e511726e255074cba7ab0d543a9b950",
-      "deleted": [],
-      "skipped": []
-    },
     "frame-extension-method": {
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "run": "fractal-engineering-harness-20261112-024950",
       "trial": "frame-extension-method__BNvdv4X",
       "ended": "ok",
       "reward": 0.7852,
       "tree": "6d1a56c34e86a5cefa47ed12b1056f0cc3bb0ea0103dfc80c92512d2c772812b",
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
         "filesystem/field_eng__constructability_4d__blind/output/submission.zip": "47b4c6d4e32248d1716f66ba86e3c4794fb7e12b"
       },
       "final_message": "42dbb1941d83f5d30fa037a6d4d074290384c683",
+      "deleted": [],
+      "skipped": []
+    },
+    "cooling-water-flush-plan": {
+      "run": "fractal-engineering-harness-20261112-034637",
+      "trial": "cooling-water-flush-plan__CL4i4ds",
+      "ended": "ok",
+      "reward": 0.313889,
+      "tree": "6d1a56c34e86a5cefa47ed12b1056f0cc3bb0ea0103dfc80c92512d2c772812b",
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
+      "files": {
+        "filesystem/final_batch4__mechanical_task5_pcw_flush_mop__blind/output/submission.zip": "9b39cbd853a5f741e8cdf6fdb1f99c92d88cdb81"
+      },
+      "final_message": "8b066a4f4afa6aac45cb544dc57e341fa4254a04",
       "deleted": [],
       "skipped": []
     }
