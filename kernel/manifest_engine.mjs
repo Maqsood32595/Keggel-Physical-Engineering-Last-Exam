@@ -21,7 +21,7 @@ export class ManifestEngine {
       {
         id: "slice_01_recon",
         name: "Recon & Constraints Extraction",
-        description: "Explore workspace documents, specs, code, and identify all hard-gate constraints.",
+        description: "Explore workspace documents, specs, code, rules/, catalogue/, and extract all governing clauses, numbers, and hard-gate limits into constraint registers with high recall (>70%).",
         phase: "recon",
         allowedTools: ["bash", "read_file", "mcp"],
         expectedExports: ["recon_summary.md"],
@@ -29,7 +29,7 @@ export class ManifestEngine {
       {
         id: "slice_02_execution",
         name: "Engineering Computation & Deliverables",
-        description: "Perform physical/structural/electrical calculations and generate required deliverable files.",
+        description: "Perform physical/structural/electrical calculations and generate required deliverable files. Apply resource leveling (crane shifts <= daily limit, gang caps) and populate all JSON equipment/temporary works with real catalog entries (never empty {}).",
         phase: "compute",
         allowedTools: ["bash", "read_file", "write_file", "edit_file", "mcp"],
         expectedExports: taskAnalysis.subFiles.map(s => s.filename),

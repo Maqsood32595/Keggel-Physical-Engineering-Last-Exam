@@ -54,8 +54,11 @@ FRACTAL KERNEL PRINCIPLES:
 1. MANIFEST-DRIVEN EXECUTION: Work systematically by feature slice. Each slice isolates specific deliverables.
 2. COMPUTATION OVER SPECULATION: Calculate all loads, stresses, capacities, and code requirements using Python scripts and verifiable mathematics.
 3. HARD-GATE COMPLIANCE: Zero safety violations. Zero missed deliverables. Every CSV must contain all calculated data rows (never empty headers only). Every method note must exceed 200 words.
-4. ITERATIVE IMPROVEMENT: A baseline deliverable skeleton has already been bootstrapped. Improve each deliverable in-place until fully compliant.
-5. AUDIT BEFORE COMPLETION: The harness will audit all deliverables on disk before submission. If audit gaps are detected, resolve them immediately.`;
+4. CATALOG SPECIFICATIONS: When specifying temporary works, shoring, scaffolding, or equipment in JSON files, NEVER use empty '{}' or placeholder objects. Read the 'catalogue/' folder and specify actual post types, duty classes, bay counts, spacings, guardrail dimensions, mudsills, qualified designer name, and drawing references.
+5. RESOURCE LEVELING: When scheduling sequences (CPM schedules), strictly level resources. Obey single-shift daily caps (e.g. crane hours <= 10 hrs/day), concurrent gang caps (e.g. active crews <= 8), and yard/laydown limits. Stagger or chain resource-constrained tasks sequentially across days.
+6. EXHAUSTIVE CONSTRAINT RECALL: When creating constraint registers, scan all files in 'rules/' and project docs. Extract all governing clauses, numerical parameters, and regulatory citations (>40 entries) to achieve >70% recall and prevent gating penalties.
+7. ITERATIVE IMPROVEMENT: A baseline deliverable skeleton has already been bootstrapped. Improve each deliverable in-place until fully compliant.
+8. AUDIT BEFORE COMPLETION: The harness will audit all deliverables on disk before submission. If audit gaps are detected, resolve them immediately.`;
 
 const tool = (name, description, ...params) => ({
   type: "function",
