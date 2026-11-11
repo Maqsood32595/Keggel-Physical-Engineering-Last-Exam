@@ -1,24 +1,24 @@
 {
   "format": 1,
   "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-  "created": "2026-11-11T20:04:49Z",
+  "created": "2026-11-11T21:45:40Z",
   "harness": {
     "name": "fractal-engineering-harness",
     "model_api": "gemini/gemini-4-argon",
-    "tree": "aa1e80bb87fecb773d9dfb7d68ced576057184b6a8c2402c61d1583ef4409353",
+    "tree": "6d1a56c34e86a5cefa47ed12b1056f0cc3bb0ea0103dfc80c92512d2c772812b",
     "files": {
       ".gitignore": "100644 097dbf358af505c6cf0ff5e6e36e5afd9a4c57c5",
       "LICENSE": "100644 dd2b96eb0641dbd02ca926d8eda8446e9a3f8d38",
       "README.md": "100644 818fc2bfedb89ff62bf3de519ce07bca114bade2",
       "kernel/contracts.mjs": "100644 3600172c814a0c21155477ba09d24938c2c5969e",
-      "kernel/manifest_engine.mjs": "100644 1a90d0620bd84300289ebe7b04c739da138d275f",
+      "kernel/manifest_engine.mjs": "100644 a19aa5f12eb0feb760c24f7bb1606fb62f4b09ca",
       "kernel/mcp_client.mjs": "100644 67299a1acd2237e5f545f920aea0e88c11034cc7",
       "package-lock.json": "100644 d46395afe49677e9f0b84c2aa9980f731481e43c",
       "package.json": "100644 de170e3c6cf4a1d51a6f9b91549b7fa97b0f0dd8",
-      "serve.mjs": "100644 c5b8c55a1ad7929ae56b3467dc66b5a8f07a227b",
+      "serve.mjs": "100644 3658ec847b18c92914e23cf7990c9f458c3bd20a",
       "submission.yaml": "100644 a53721bc5512a9baf45051b31b06988f109de061"
     },
-    "commit": "fa9b416c6abe768d38f15bfa4c17aefa99ab5461",
+    "commit": "639c915d04a28a1363b2d664684585c7d1c38c7c",
     "dirty": false
   },
   "tasks": {
@@ -56,16 +56,16 @@
       "skipped": []
     },
     "frame-extension-method": {
-      "run": "fractal-engineering-harness-20261112-010420",
-      "trial": "frame-extension-method__SRgEAJi",
+      "run": "fractal-engineering-harness-20261112-024950",
+      "trial": "frame-extension-method__BNvdv4X",
       "ended": "ok",
-      "reward": 0.369,
-      "tree": "aa1e80bb87fecb773d9dfb7d68ced576057184b6a8c2402c61d1583ef4409353",
+      "reward": 0.7852,
+      "tree": "6d1a56c34e86a5cefa47ed12b1056f0cc3bb0ea0103dfc80c92512d2c772812b",
       "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
-        "filesystem/field_eng__constructability_4d__blind/output/submission.zip": "df38065cfd7c2392f7e2b60ac53367328b984b3f"
+        "filesystem/field_eng__constructability_4d__blind/output/submission.zip": "47b4c6d4e32248d1716f66ba86e3c4794fb7e12b"
       },
-      "final_message": "5156577b3b90f4a02cc0b807ad28b6c774e16635",
+      "final_message": "42dbb1941d83f5d30fa037a6d4d074290384c683",
       "deleted": [],
       "skipped": []
     }
