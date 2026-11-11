@@ -21,7 +21,7 @@ export class ManifestEngine {
       {
         id: "slice_01_recon",
         name: "Recon & Constraints Extraction",
-        description: "Inventory all workspace documents, CAD/DXF/IFC geometry, scanned PDFs, catalogs, and regulatory correspondence; apply authority precedence and extract active governing limits into structured constraint registers without superseded noise.",
+        description: "Inventory all workspace documents, CAD/DXF/IFC geometry, scanned PDFs, catalogs, and regulatory correspondence; apply authority precedence and decompose compound sub-clauses ((a)/(b)/(i)/(ii))—including qualitative coverage/completeness gates—into atomic rows in active constraint registers without superseded noise.",
         phase: "recon",
         allowedTools: ["bash", "read_file", "mcp"],
         expectedExports: ["recon_summary.md"],
@@ -29,7 +29,7 @@ export class ManifestEngine {
       {
         id: "slice_02_execution",
         name: "Engineering Computation & Deliverables",
-        description: "Build deterministic 64-bit computational scripts to solve governing physical, analytical, geometric, and cost/scheduling requirements; enforce resource leveling, zero geometric clashes, schema/column alignment, and full catalog/BOM population.",
+        description: "Build deterministic 64-bit computational scripts to solve governing physical, analytical, geometric, and cost/scheduling requirements; enforce joint discrete sizing (capacity AND geometric gap/fit/clearance together), resource leveling, zero geometric clashes, schema/column alignment, and full catalog/BOM population.",
         phase: "compute",
         allowedTools: ["bash", "read_file", "write_file", "edit_file", "mcp"],
         expectedExports: taskAnalysis.subFiles.map(s => s.filename),
