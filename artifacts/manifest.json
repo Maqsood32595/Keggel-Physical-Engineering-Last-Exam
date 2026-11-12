@@ -1,24 +1,24 @@
 {
   "format": 1,
   "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-  "created": "2026-11-11T23:21:41Z",
+  "created": "2026-11-12T11:27:54Z",
   "harness": {
     "name": "fractal-engineering-harness",
-    "model_api": "gemini/gemini-4-argon",
-    "tree": "6d1a56c34e86a5cefa47ed12b1056f0cc3bb0ea0103dfc80c92512d2c772812b",
+    "model_api": "google-cloud/gemini-4-argon",
+    "tree": "9b010306e945874d801414b0ac0dece22b87a9746ca2eb84c13d21fde7aad343",
     "files": {
       ".gitignore": "100644 097dbf358af505c6cf0ff5e6e36e5afd9a4c57c5",
       "LICENSE": "100644 dd2b96eb0641dbd02ca926d8eda8446e9a3f8d38",
       "README.md": "100644 818fc2bfedb89ff62bf3de519ce07bca114bade2",
       "kernel/contracts.mjs": "100644 3600172c814a0c21155477ba09d24938c2c5969e",
-      "kernel/manifest_engine.mjs": "100644 a19aa5f12eb0feb760c24f7bb1606fb62f4b09ca",
+      "kernel/manifest_engine.mjs": "100644 6784dd887413232bf4d57af53bca9d0276d73192",
       "kernel/mcp_client.mjs": "100644 67299a1acd2237e5f545f920aea0e88c11034cc7",
       "package-lock.json": "100644 d46395afe49677e9f0b84c2aa9980f731481e43c",
       "package.json": "100644 de170e3c6cf4a1d51a6f9b91549b7fa97b0f0dd8",
-      "serve.mjs": "100644 3658ec847b18c92914e23cf7990c9f458c3bd20a",
-      "submission.yaml": "100644 a53721bc5512a9baf45051b31b06988f109de061"
+      "serve.mjs": "100644 c4b5de6bc6dad3c3a42254053e81af128b215ff0",
+      "submission.yaml": "100644 9857b531a678e135efe924405a207e45f8123854"
     },
-    "commit": "6d95a701703d3f26d631ada7bd88787dc1f8638a",
+    "commit": "0fa0e28eacaa704a8abdeed6e962b7a8bc66a387",
     "dirty": false
   },
   "tasks": {
@@ -56,16 +56,16 @@
       "skipped": []
     },
     "cooling-water-flush-plan": {
-      "run": "fractal-engineering-harness-20261112-034637",
-      "trial": "cooling-water-flush-plan__CL4i4ds",
+      "run": "fractal-engineering-harness-20261112-144551",
+      "trial": "cooling-water-flush-plan__ifsxagX",
       "ended": "ok",
-      "reward": 0.313889,
-      "tree": "6d1a56c34e86a5cefa47ed12b1056f0cc3bb0ea0103dfc80c92512d2c772812b",
+      "reward": 0.327778,
+      "tree": "9b010306e945874d801414b0ac0dece22b87a9746ca2eb84c13d21fde7aad343",
       "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
-        "filesystem/final_batch4__mechanical_task5_pcw_flush_mop__blind/output/submission.zip": "9b39cbd853a5f741e8cdf6fdb1f99c92d88cdb81"
+        "filesystem/final_batch4__mechanical_task5_pcw_flush_mop__blind/output/submission.zip": "ddaba335ba8cea71bf78bbde4948b02218368170"
       },
-      "final_message": "8b066a4f4afa6aac45cb544dc57e341fa4254a04",
+      "final_message": "12483fe3f6bddc4de37289f8f76ee4ed320a00e4",
       "deleted": [],
       "skipped": []
     }
