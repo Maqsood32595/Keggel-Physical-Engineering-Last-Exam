@@ -29,7 +29,7 @@ const CHAT_URL = `${(process.env.MODEL_BASE_URL || "https://generativelanguage.g
 const WRAP_UP_SEC = 240;
 const WRAP_UP = "Time is almost up. Stop, verify deliverables on disk, and reply with your summary.";
 const RESULT_CHARS = 25_000;
-const RETRY_WAITS = [5, 15, 30, 60, 120];
+const RETRY_WAITS = [10, 20, 45, 90, 120, 180, 300, 300];
 
 const CONTEXT_FULL =
   /context.?(length|window)|prompt is too long|maximum prompt length|exceed[^.]{0,40}(token|context)/i;
@@ -61,7 +61,7 @@ UNIVERSAL FRACTAL KERNEL PRINCIPLES:
 8. JOINT DISCRETE SIZING (CAPACITY + GEOMETRIC FIT): When sizing discrete catalog components (n parallel runs, units, planks, panels, supports) within a fixed structural/spatial envelope (frame/bay width, span, tray, duct bank), pick the smallest integer n in Python that SIMULTANEOUSLY satisfies every capacity gate (installed >= factored demand) AND every geometric fit/gap/clearance/spacing limit (residual open gap = envelope_width - n * unit_width <= max_gap; fill <= max_fill). Never optimize cost on load capacity alone while violating residual gap or spacing limits.
 9. CUMULATIVE PROGRAMME CAPS & ALTERNATE STREAM ROUTING: Where multiple subsystems or stages share an aggregate cap (total discharge volume, water/power budget, haul limits, yard/laydown stock, daily crane/crew hours), enforce sum(all active draws) <= global_cap in Python alongside per-unit limits, automatically routing non-compliant or excess streams to permitted alternate disposal/treatment paths.
 10. PER-STAGE TOPOLOGY & COMPONENT RATING VERIFICATION: When operations change active system topology across phases (e.g., temporary bypass vs. full-loop/turnover restoration, construction staging, switching states), recompute hydraulic/electrical/structural demands independently for each phase's exact active path, verifying BOTH source duty capacity AND every in-line component's maximum pressure, voltage, or stress rating.
-11. SELF-AUDIT & GLOBAL BINDING MARGIN: Compile and run automated verification scripts on disk checking calculations, cumulative caps, per-stage equipment ratings, joint capacity+clearance gates, atomic register coverage/alignment, ledger parity, and zero safety violations. Whenever naming binding/limiting constraints in reports, compute normalized margins across ALL constraints in Python and state the true global argmin constraint. Fix every gap immediately.`;
+11. EARLY PACKAGING & SELF-AUDIT: Write calculated first-pass deliverables into the target output directory promptly once initial scripts complete, then refine in-place rather than holding all outputs until late turns. Compile and run verification scripts on disk checking calculations, cumulative caps, per-stage equipment ratings, joint capacity+clearance gates, atomic register coverage/alignment, ledger parity, and zero safety violations. Whenever naming binding/limiting constraints in reports, compute normalized margins across ALL constraints in Python and state the true global argmin constraint. Fix every gap immediately.`;
 
 const tool = (name, description, ...params) => ({
   type: "function",
@@ -111,7 +111,9 @@ class Task {
     this.ids = 0;
     this.abort = new AbortController();
     this.finished = false;
-    const budget = message.limits?.agent_timeout_sec;
+    const softCap = Number(process.env.SOFT_TASK_SEC || 0);
+    const limitSec = message.limits?.agent_timeout_sec;
+    const budget = softCap > 0 && limitSec ? Math.min(limitSec, softCap) : (softCap > 0 ? softCap : limitSec);
     this.deadline = budget ? Date.now() + budget * 1000 : null;
   }
 
@@ -345,7 +347,7 @@ async function chat(task, messages, tools, toolChoice, signal, onText) {
   });
 
   for (const wait of [...RETRY_WAITS, null]) {
-    let error, retry;
+    let error, retry, retryAfter = 0;
     try {
       const response = await fetch(CHAT_URL, {
         method: "POST",
@@ -360,6 +362,8 @@ async function chat(task, messages, tools, toolChoice, signal, onText) {
       if (response.ok) return await readReply(response.body, onText);
       const text = await response.text();
       retry = [408, 409, 429].includes(response.status) || response.status >= 500;
+      const ra = Number(response.headers.get("retry-after"));
+      if (Number.isFinite(ra) && ra > 0) retryAfter = Math.min(300, ra);
       const full = response.status === 400 && CONTEXT_FULL.test(text.slice(0, 4000));
       error = new (full ? ContextFull : Error)(`model: HTTP ${response.status}: ${text.slice(0, 300)}`);
     } catch (caught) {
@@ -367,8 +371,10 @@ async function chat(task, messages, tools, toolChoice, signal, onText) {
       [error, retry] = [caught, !signal.aborted && !final];
     }
     if (!retry || wait === null) throw error;
-    task.send({ type: "log", text: `${error.message.slice(0, 300)}; again in ${wait} s` });
-    await sleep(wait * 1000, undefined, { signal });
+    const rem = task.secondsLeft();
+    const waitSec = rem === null ? Math.max(wait, retryAfter) : Math.max(1, Math.min(Math.max(wait, retryAfter), Math.floor(rem)));
+    task.send({ type: "log", text: `${error.message.slice(0, 300)}; again in ${waitSec} s` });
+    await sleep(waitSec * 1000, undefined, { signal });
   }
 }
 
@@ -454,7 +460,8 @@ async function solve(task) {
   let forceToolCall = false;
   const allowRequiredToolChoice = !MODEL.toLowerCase().includes("claude");
 
-  while (true) {
+  try {
+    while (true) {
     const left = task.secondsLeft();
     const wrapUp = left !== null && left < WRAP_UP_SEC;
 
@@ -548,9 +555,12 @@ async function solve(task) {
       messages.push({ role: "tool", tool_call_id: call.id, content: await runTool(task, call.function, mcpMap) });
     }
 
-    if (left !== null) {
-      messages.at(-1).content += `\n[${Math.floor(task.secondsLeft() / 60)} minutes left]`;
+      if (left !== null) {
+        messages.at(-1).content += `\n[${Math.floor(task.secondsLeft() / 60)} minutes left]`;
+      }
     }
+  } finally {
+    await syncDeliverablesToZip(task, taskAnalysis).catch(() => {});
   }
 }
 
