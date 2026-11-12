@@ -225,6 +225,7 @@ def audit_table_rows(filename, headers, rows):
             ("75C Terminal Rating", r"(110\.14|75\s*°?\s*C|TERMINAL\s*TEMP)", "F04: termination temperature rating limitation"),
             ("Raceway Derating", r"(310\.15|DERAT|ADJUST|CONDUIT\s*FILL)", "F07: raceway ambient correction & conductor adjustment"),
             ("Voltage Drop Load", r"(VOLTAGE\s*DROP|3\s*%\s*|5\s*%\s*|UFC\s*3-501|VD)", "F08/F10: voltage-drop limits & load basis"),
+            ("Cable Tray Fill", r"(TRAY|TRAY\s*FILL|6\.3\.2|26\s*05\s*33)", "F18: cable tray fill limit [sum of cable diameters <= 90% usable width per EDS-26 Section 6.3.2 / Spec 26 05 33]"),
             ("Cost Ledger Parity", r"(COST|LEDGER|LABOUR|LABOR|MATERIAL|ESTIMATE)", "F21: declared cost ledger matching submitted selections"),
             ("Codes of Record", r"(NFPA\s*70|IBC|UFC\s*1-200|ORDER\s*OF\s*PRECEDENCE)", "F23: codes of record and order of precedence")
         ]
