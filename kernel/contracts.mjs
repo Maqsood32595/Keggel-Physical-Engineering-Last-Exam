@@ -154,6 +154,19 @@ def check_bad_tokens(val, ctx):
         return f"{ctx} contains unfilled placeholder '{s[:40]}'"
     return None
 
+def parse_cmil(s):
+    if not s:
+        return None
+    clean = re.sub(r"[#\s]|awg|kcmil|mcm|\.0$", "", str(s).strip(), flags=re.I).strip()
+    cm_map = {
+        "14": 4110, "12": 6530, "10": 10380, "8": 16510, "6": 26240,
+        "4": 41740, "3": 52620, "2": 66360, "1": 83690, "1/0": 105600,
+        "2/0": 133100, "3/0": 167800, "4/0": 211600, "250": 250000,
+        "300": 300000, "350": 350000, "400": 400000, "500": 500000,
+        "600": 600000, "750": 750000, "1000": 1000000
+    }
+    return cm_map.get(clean)
+
 def audit_table_rows(filename, headers, rows):
     norm_headers = [str(h or "").strip().lower() for h in headers]
     has_doc_col = "document" in norm_headers and ("clause" in norm_headers or "kind" in norm_headers)
@@ -182,6 +195,42 @@ def audit_table_rows(filename, headers, rows):
         issues.append(f"{filename} has {shifted_rows} column-shifted row(s) (check column alignment vs headers {headers[:6]})")
     if superseded_rows > 0:
         issues.append(f"{filename} contains {superseded_rows} SUPERSEDED/OTHER_SCOPE citation(s) in active register")
+
+    # Electrical schedule audit: proportional EGC check per NEC 250.122(B)
+    size_idx = norm_headers.index("size") if "size" in norm_headers else -1
+    egc_idx = norm_headers.index("egc") if "egc" in norm_headers else -1
+    tag_idx = norm_headers.index("circuit") if "circuit" in norm_headers else (norm_headers.index("tag") if "tag" in norm_headers else 0)
+    gov_idx = norm_headers.index("governing") if "governing" in norm_headers else -1
+    if size_idx >= 0 and egc_idx >= 0:
+        egc_violations = 0
+        for r_i, row in enumerate(rows, start=2):
+            if size_idx < len(row) and egc_idx < len(row):
+                p_cm = parse_cmil(row[size_idx])
+                e_cm = parse_cmil(row[egc_idx])
+                gov_str = str(row[gov_idx] or "").upper() if gov_idx >= 0 and gov_idx < len(row) else ""
+                c_tag = str(row[tag_idx] or f"row {r_i}")
+                if p_cm and e_cm and ("VD" in gov_str or "VOLT" in gov_str or p_cm >= 250000):
+                    min_prop_cmil = 41740 if p_cm <= 250000 else (52620 if p_cm <= 350000 else 66360)
+                    if e_cm < min_prop_cmil:
+                        egc_violations += 1
+                        if egc_violations <= 2:
+                            issues.append(f"{filename} row {r_i} ({c_tag}): Phase conductor ({row[size_idx]}) upsized but EGC ({row[egc_idx]}) was not proportionately increased per NEC 250.122(B). Required EGC >= {min_prop_cmil} cmil.")
+        if egc_violations > 2:
+            issues.append(f"{filename} has {egc_violations} total rows where EGC was not proportionately increased per NEC 250.122(B)")
+
+    # Constraint register completeness audit: cross-reference active design families
+    if has_doc_col:
+        all_reg_text = " ".join(str(c or "") for row in rows for c in row).upper()
+        REG_CHECKS = [
+            ("75C Terminal Rating", r"(110\.14|75\s*°?\s*C|TERMINAL\s*TEMP)", "F04: termination temperature rating limitation"),
+            ("Raceway Derating", r"(310\.15|DERAT|ADJUST|CONDUIT\s*FILL)", "F07: raceway ambient correction & conductor adjustment"),
+            ("Voltage Drop Load", r"(VOLTAGE\s*DROP|3\s*%\s*|5\s*%\s*|UFC\s*3-501|VD)", "F08/F10: voltage-drop limits & load basis"),
+            ("Cost Ledger Parity", r"(COST|LEDGER|LABOUR|LABOR|MATERIAL|ESTIMATE)", "F21: declared cost ledger matching submitted selections"),
+            ("Codes of Record", r"(NFPA\s*70|IBC|UFC\s*1-200|ORDER\s*OF\s*PRECEDENCE)", "F23: codes of record and order of precedence")
+        ]
+        for label, pat, desc in REG_CHECKS:
+            if not re.search(pat, all_reg_text):
+                issues.append(f"{filename}: Missing constraint register row for '{label}' ({desc}). All active governing criteria must be registered.")
 
 def check_single_file(path_obj, label, require_nonempty=True):
     name = label or path_obj.name
