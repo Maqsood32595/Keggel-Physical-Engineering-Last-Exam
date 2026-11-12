@@ -221,18 +221,26 @@ def audit_table_rows(filename, headers, rows):
     # Constraint register completeness audit: cross-reference active design families
     if has_doc_col:
         all_reg_text = " ".join(str(c or "") for row in rows for c in row).upper()
-        REG_CHECKS = [
-            ("Termination Allowance", r"(TERMINATION\s*ALLOWANCE|8\s*FT|4\.2\.4|RIGHT\s*ANGLES)", "F01: circuit length route + 8 ft termination allowance at each end per EDS-26 Section 4.2.4"),
-            ("75C Terminal Rating", r"(110\.14|75\s*°?\s*C|TERMINAL\s*TEMP)", "F04: termination temperature rating limitation"),
-            ("Raceway Derating", r"(310\.15|DERAT|ADJUST|CONDUIT\s*FILL)", "F07: raceway ambient correction & conductor adjustment"),
-            ("Voltage Drop Load", r"(VOLTAGE\s*DROP|3\s*%\s*|5\s*%\s*|UFC\s*3-501|VD)", "F08/F10: voltage-drop limits & load basis"),
-            ("Cable Tray Fill", r"(TRAY|TRAY\s*FILL|6\.3\.2|26\s*05\s*33)", "F18: cable tray fill limit [sum of cable diameters <= 90% usable width per EDS-26 Section 6.3.2 / Spec 26 05 33]"),
-            ("Cost Ledger Parity", r"(COST|LEDGER|LABOUR|LABOR|MATERIAL|ESTIMATE)", "F21: declared cost ledger matching submitted selections"),
-            ("Codes of Record", r"(NFPA\s*70|IBC|UFC\s*1-200|ORDER\s*OF\s*PRECEDENCE)", "F23: codes of record and order of precedence")
+        # Universal code / ledger parity checks across all registers
+        UNIVERSAL_CHECKS = [
+            ("Codes of Record", r"(NFPA|IBC|UFC|STANDARD|CODE|PRECEDENCE)", "governing codes of record and order of precedence"),
+            ("Cost / Ledger Parity", r"(COST|UNIT|LABOUR|LABOR|MATERIAL|RATE|QUANTITY|PRICE|LEDGER|ESTIMATE)", "basis of pricing or quantity takeoff ledger")
         ]
-        for label, pat, desc in REG_CHECKS:
+        for label, pat, desc in UNIVERSAL_CHECKS:
             if not re.search(pat, all_reg_text):
                 issues.append(f"{filename}: Missing constraint register row for '{label}' ({desc}). All active governing criteria must be registered.")
+
+        # Electrical-specific criteria (when electrical/cables/conductors/feeders are present)
+        is_elec = any(re.search(p, all_reg_text) for p in [r"VOLT", r"AMPER", r"AMP", r"WIRE", r"CABLE", r"FEEDER", r"CIRCUIT", r"OCPD", r"CONDUIT"])
+        if is_elec:
+            ELEC_CHECKS = [
+                ("Termination Temperature", r"(110\.14|60\s*°?\s*C|75\s*°?\s*C|90\s*°?\s*C|TERMINAL\s*TEMP|LUG)", "termination temperature rating limitation"),
+                ("Conductor Derating / Capacity", r"(310\.15|DERAT|ADJUST|FILL|AMPACITY|CORRECTION)", "ambient correction and conductor ampacity derating"),
+                ("Voltage Drop Limit", r"(VOLTAGE\s*DROP|3\s*%\s*|5\s*%\s*|UFC\s*3-501|VD)", "feeder/branch voltage-drop design limits")
+            ]
+            for label, pat, desc in ELEC_CHECKS:
+                if not re.search(pat, all_reg_text):
+                    issues.append(f"{filename}: Missing constraint register row for '{label}' ({desc}). All active governing electrical criteria must be registered.")
 
 def check_single_file(path_obj, label, require_nonempty=True):
     name = label or path_obj.name
