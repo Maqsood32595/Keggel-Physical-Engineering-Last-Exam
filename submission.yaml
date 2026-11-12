@@ -13,7 +13,7 @@
 # limitations under the License.
 
 name: fractal-engineering-harness
-model_api: google-cloud/gemini-4-argon
+model_api: google-cloud/gemini-3.8-flash
 install: cd {src} && npm ci --omit=dev --no-audit --no-fund
 serve: node {src}/serve.mjs
 env:
