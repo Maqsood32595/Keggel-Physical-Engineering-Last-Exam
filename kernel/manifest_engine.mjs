@@ -29,7 +29,7 @@ export class ManifestEngine {
       {
         id: "slice_02_execution",
         name: "Engineering Computation & Deliverables",
-        description: "Build deterministic 64-bit computational scripts to solve governing physical, analytical, geometric, and cost/scheduling requirements; enforce joint discrete sizing (capacity AND geometric gap/fit/clearance together), resource leveling, zero geometric clashes, schema/column alignment, and full catalog/BOM population.",
+        description: "Build deterministic 64-bit computational scripts to solve governing physical, analytical, geometric, and cost/scheduling requirements; enforce joint discrete sizing (capacity AND geometric gap/fit/clearance together), cumulative programme caps, per-stage topology/equipment rating checks, resource leveling, zero geometric clashes, schema/column alignment, and full catalog/BOM population.",
         phase: "compute",
         allowedTools: ["bash", "read_file", "write_file", "edit_file", "mcp"],
         expectedExports: taskAnalysis.subFiles.map(s => s.filename),
@@ -37,7 +37,7 @@ export class ManifestEngine {
       {
         id: "slice_03_packaging_and_audit",
         name: "Packaging & Hard-Gate Verification",
-        description: "Verify cross-file quantitative parity, register schema/column alignment, zero placeholder values (TBD/NaN), and package exact requested deliverables.",
+        description: "Recompute serialized ledger totals/costs, verify global argmin binding margins across all constraints, check register schema/column alignment and zero placeholder values (TBD/NaN), and package exact requested deliverables.",
         phase: "audit",
         allowedTools: ["bash", "read_file", "write_file"],
         expectedExports: taskAnalysis.primaryTargets,
