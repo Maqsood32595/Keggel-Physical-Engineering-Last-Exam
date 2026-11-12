@@ -1,24 +1,24 @@
 {
   "format": 1,
   "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-  "created": "2026-11-12T17:23:10Z",
+  "created": "2026-11-12T19:06:17Z",
   "harness": {
     "name": "fractal-engineering-harness",
     "model_api": "google-cloud/gemini-3.8-flash",
-    "tree": "3dce8f50b8771ff296b61a6d2800716ca18410df7c3ad1573e8934b831ef0dca",
+    "tree": "361cc60ff5a224069c60d32c10417f57ae1d3be0d6754b0f58b2c3b792178f4d",
     "files": {
       ".gitignore": "100644 097dbf358af505c6cf0ff5e6e36e5afd9a4c57c5",
       "LICENSE": "100644 dd2b96eb0641dbd02ca926d8eda8446e9a3f8d38",
       "README.md": "100644 818fc2bfedb89ff62bf3de519ce07bca114bade2",
-      "kernel/contracts.mjs": "100644 3600172c814a0c21155477ba09d24938c2c5969e",
+      "kernel/contracts.mjs": "100644 12560cba53794ef5673a00c685367c30d6d31a69",
       "kernel/manifest_engine.mjs": "100644 6784dd887413232bf4d57af53bca9d0276d73192",
       "kernel/mcp_client.mjs": "100644 67299a1acd2237e5f545f920aea0e88c11034cc7",
       "package-lock.json": "100644 d46395afe49677e9f0b84c2aa9980f731481e43c",
       "package.json": "100644 de170e3c6cf4a1d51a6f9b91549b7fa97b0f0dd8",
-      "serve.mjs": "100644 8e439c822edd223a4f2b56762ba4970fb82ffb8e",
+      "serve.mjs": "100644 7d7c99aa24060a02235c0148c82da73862da1994",
       "submission.yaml": "100644 930663452432ffc9844ef9d66470d2b6dddfc28f"
     },
-    "commit": "d599c41908ffc631e6ab15e26c517fb5d50721b1",
+    "commit": "668326e28b834df739dc7ac83c0a4b03045106b5",
     "dirty": false
   },
   "tasks": {
@@ -70,16 +70,16 @@
       "skipped": []
     },
     "lv-cable-sizing": {
-      "run": "fractal-engineering-harness-20261112-223121",
-      "trial": "lv-cable-sizing__hTxn5mn",
+      "run": "fractal-engineering-harness-20261112-235525",
+      "trial": "lv-cable-sizing__yfDV542",
       "ended": "ok",
-      "reward": 0.232208,
-      "tree": "3dce8f50b8771ff296b61a6d2800716ca18410df7c3ad1573e8934b831ef0dca",
+      "reward": 0.269091,
+      "tree": "361cc60ff5a224069c60d32c10417f57ae1d3be0d6754b0f58b2c3b792178f4d",
       "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
-        "filesystem/electrical__lv_cable_sizing__blind/output/submission.zip": "0dbc730249b81228ceda373850b7341334e5655c"
+        "filesystem/electrical__lv_cable_sizing__blind/output/submission.zip": "b3bc5ee8aa8f3bbda896d82faf04b77ad6d3bb7d"
       },
-      "final_message": "928100271b0516c7dae5365715de1ccec62a5f72",
+      "final_message": "63775a0cf73ef7f6746f7c75412706279c39a125",
       "deleted": [],
       "skipped": []
     }
