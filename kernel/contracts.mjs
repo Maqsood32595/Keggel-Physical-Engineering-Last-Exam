@@ -222,6 +222,7 @@ def audit_table_rows(filename, headers, rows):
     if has_doc_col:
         all_reg_text = " ".join(str(c or "") for row in rows for c in row).upper()
         REG_CHECKS = [
+            ("Termination Allowance", r"(TERMINATION\s*ALLOWANCE|8\s*FT|4\.2\.4|RIGHT\s*ANGLES)", "F01: circuit length route + 8 ft termination allowance at each end per EDS-26 Section 4.2.4"),
             ("75C Terminal Rating", r"(110\.14|75\s*°?\s*C|TERMINAL\s*TEMP)", "F04: termination temperature rating limitation"),
             ("Raceway Derating", r"(310\.15|DERAT|ADJUST|CONDUIT\s*FILL)", "F07: raceway ambient correction & conductor adjustment"),
             ("Voltage Drop Load", r"(VOLTAGE\s*DROP|3\s*%\s*|5\s*%\s*|UFC\s*3-501|VD)", "F08/F10: voltage-drop limits & load basis"),
