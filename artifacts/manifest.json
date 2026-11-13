@@ -75,10 +75,10 @@
       "run": "fractal-engineering-harness-20261112-235525",
       "trial": "lv-cable-sizing__yfDV542",
       "ended": "ok",
-      "reward": 0.269091,
+      "reward": 0.652002,
       "tree": "361cc60ff5a224069c60d32c10417f57ae1d3be0d6754b0f58b2c3b792178f4d",
       "files": {
-        "filesystem/electrical__lv_cable_sizing__blind/output/submission.zip": "b3bc5ee8aa8f3bbda896d82faf04b77ad6d3bb7d"
+        "filesystem/electrical__lv_cable_sizing__blind/output/submission.zip": "7d5f61070e5d14dd0733bda24a17e01200bd466a"
       },
       "final_message": "63775a0cf73ef7f6746f7c75412706279c39a125",
       "deleted": [],
