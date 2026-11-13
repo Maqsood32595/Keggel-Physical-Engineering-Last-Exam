@@ -242,6 +242,50 @@ def audit_table_rows(filename, headers, rows):
                 if not re.search(pat, all_reg_text):
                     issues.append(f"{filename}: Missing constraint register row for '{label}' ({desc}). All active governing electrical criteria must be registered.")
 
+    # Table total / basket reconciliation check
+    total_row_idx = -1
+    for r_i, row in enumerate(rows):
+        first_cell = str(row[0] or "").strip().upper()
+        if any(tok in first_cell for tok in ["TOTAL", "BASKET", "SUMMARY", "SUBTOTAL"]):
+            total_row_idx = r_i
+            break
+    if total_row_idx > 0:
+        data_rows = rows[:total_row_idx]
+        tot_row = rows[total_row_idx]
+        for c_i, h in enumerate(norm_headers):
+            if any(k in h for k in ["cost", "price", "total", "amount", "qty", "quantity"]) and c_i < len(tot_row):
+                try:
+                    stated_str = re.sub(r"[$,\s]", "", str(tot_row[c_i] or "")).strip()
+                    if stated_str and not stated_str.startswith("="):
+                        stated_val = float(stated_str)
+                        col_vals = []
+                        for dr in data_rows:
+                            if c_i < len(dr):
+                                cs = re.sub(r"[$,\s]", "", str(dr[c_i] or "")).strip()
+                                if cs and not cs.startswith("="):
+                                    col_vals.append(float(cs))
+                        if col_vals:
+                            calc_sum = sum(col_vals)
+                            if abs(calc_sum - stated_val) > 0.50 and abs(calc_sum - stated_val) / max(1.0, stated_val) > 0.01:
+                                issues.append(f"{filename}: Stated summary {h} ({stated_val}) does not reconcile with the sum of line items ({round(calc_sum, 2)})")
+                except (ValueError, TypeError):
+                    pass
+
+    # Percentage scale check (decimal vs whole percent)
+    for c_i, h in enumerate(norm_headers):
+        if any(k in h for k in ["rate", "markup", "overhead", "margin", "tax", "pct", "%"]):
+            for r_i, row in enumerate(rows, start=2):
+                if c_i < len(row):
+                    try:
+                        v_str = re.sub(r"[%,\s]", "", str(row[c_i] or "")).strip()
+                        if v_str and not v_str.startswith("="):
+                            fv = float(v_str)
+                            if 0.0001 < fv < 0.40:
+                                issues.append(f"{filename} row {r_i}: Column '{headers[c_i]}' has fractional value '{fv}'. Verify whether rubric expects a whole percentage (e.g. 9.5 for 9.5%).")
+                                break
+                    except (ValueError, TypeError):
+                        pass
+
 def check_single_file(path_obj, label, require_nonempty=True):
     name = label or path_obj.name
     if not path_obj.is_file():
@@ -310,7 +354,36 @@ def check_single_file(path_obj, label, require_nonempty=True):
                 issues.append(f"{name} contains unresolved placeholder values")
         except Exception as exc:
             issues.append(f"Invalid JSON in {name}: {exc}")
-    elif lower.endswith((".dxf", ".docx", ".ifc")) and size < 100:
+    elif lower.endswith(".docx") or lower.endswith(".txt") or (lower.endswith(".md") and "spec" in lower):
+        if size < 100:
+            issues.append(f"{name} appears incomplete ({size} bytes)")
+        else:
+            raw_text = ""
+            if lower.endswith(".docx"):
+                try:
+                    import docx
+                    doc = docx.Document(str(path_obj))
+                    raw_text = " \n".join(p.text for p in doc.paragraphs)
+                except Exception:
+                    pass
+            else:
+                try:
+                    raw_text = path_obj.read_text(encoding="utf-8", errors="replace")
+                except Exception:
+                    pass
+            if raw_text and ("PART 1" in raw_text.upper() or "REFERENCES" in raw_text.upper()):
+                stds_cited = set(re.findall(r"\b(?:IEEE|ASTM|NFPA|NEMA|UL|ANSI|UFGS|ISO|ASCE)\s+[\w.-]+", raw_text, re.I))
+                ref_match = re.search(r"(?:1\.2\s+REFERENCES|PART\s+1.*?REFERENCES)(.*?)(?:PART\s+2|PART\s+II|2\.1)", raw_text, re.S | re.I)
+                if ref_match:
+                    ref_text = ref_match.group(1).upper()
+                    missing_refs = []
+                    for std in stds_cited:
+                        std_clean = re.sub(r"\s+", "", std).upper()
+                        if std_clean not in re.sub(r"\s+", "", ref_text):
+                            missing_refs.append(std)
+                    if missing_refs:
+                        issues.append(f"{name}: Standards cited in body but missing from Part 1 References: {missing_refs[:6]}. Every cited standard must be formally listed in Part 1.")
+    elif lower.endswith((".dxf", ".ifc")) and size < 100:
         issues.append(f"{name} appears incomplete ({size} bytes)")
 
 sub_files = cfg.get("subFiles", [])
