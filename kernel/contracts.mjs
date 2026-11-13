@@ -286,6 +286,15 @@ def audit_table_rows(filename, headers, rows):
                     except (ValueError, TypeError):
                         pass
 
+    # CSI Specification Register check across active sections
+    if has_doc_col and "applies_to" in norm_headers:
+        app_idx = norm_headers.index("applies_to")
+        all_applies = " ".join(str(r[app_idx] or "") for r in rows if app_idx < len(r))
+        if "all" not in all_applies.lower():
+            for sec_req in ["26 05 73", "26 20 00", "26 24 13", "26 32 15", "26 36 23"]:
+                if sec_req not in all_applies:
+                    issues.append(f"{filename}: Missing binding rows in Register for Section '{sec_req}'. Every delivered section must have governing requirements registered with applies_to naming the section (or 'all').")
+
 def check_single_file(path_obj, label, require_nonempty=True):
     name = label or path_obj.name
     if not path_obj.is_file():
@@ -405,6 +414,16 @@ for target in cfg.get("primaryTargets", []):
                     fname = sub["filename"]
                     if not any(n.endswith(fname) for n in names):
                         issues.append(f"Zip {target} is missing required subfile: {fname}")
+                # Check for duplicate CSI section files in specs/
+                specs_seen = {}
+                for fn in names:
+                    m = re.search(r"specs/(\d{2}\s*\d{2}\s*\d{2})", fn, re.I)
+                    if m:
+                        sec_no = re.sub(r"\s+", " ", m.group(1)).strip()
+                        specs_seen.setdefault(sec_no, []).append(fn)
+                for sec_no, flist in specs_seen.items():
+                    if len(flist) > 1:
+                        issues.append(f"Duplicate specification files in zip for Section {sec_no}: {flist}. Keep only ONE .docx per section (e.g. 'specs/{sec_no}.docx').")
         except Exception as exc:
             issues.append(f"Target zip corrupted ({target}): {exc}")
 
