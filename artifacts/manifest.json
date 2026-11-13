@@ -172,11 +172,11 @@
       "run": "fractal-engineering-harness-20261114-003013",
       "trial": "division-26-specifications__8iQ8YNo",
       "ended": "ok",
-      "reward": 0.453751,
+      "reward": 0.8608,
       "tree": "9264e9cd4aea4c3604d3579184bc72a7ba38c27687071249640ddf43998ac03e",
       "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
-        "filesystem/final_batch4__electrical_task8_electrical_specs__blind/output/submission.zip": "c4c7cd73e103db09b9a10d4cb0b9688e0cf09dda"
+        "filesystem/final_batch4__electrical_task8_electrical_specs__blind/output/submission.zip": "6eb790970ed897e3740d378b9e31b24e952a96c1"
       },
       "final_message": "e7a96fd7d81ddc226f8b0b8040d047a1557517da",
       "deleted": [],

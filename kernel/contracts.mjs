@@ -144,7 +144,6 @@ for docx_path in out_dir.rglob('*.docx'):
                     'existing and recommended ratings', 'model existing electrical equipment'
                 ]):
                     p.text = ""
-                    modified = True
             full_txt = " ".join(p.text for p in doc.paragraphs)
             if 'skm powertools' not in full_txt.lower():
                 doc.add_paragraph("3.3 MODELING")
@@ -156,13 +155,11 @@ for docx_path in out_dir.rglob('*.docx'):
             for i, p in enumerate(doc.paragraphs):
                 txt = p.text
                 low = txt.lower()
-                if any(ph in low for ph in ['prisoner', 'inmate', 'existing panels modified', 'existing wiring to be reused', 'rated 10 kva and less', 'four-wire delta', 'high leg', 'for delta connections']):
+                if any(ph in low for ph in ['prisoner', 'inmate', 'existing panels modified', 'existing wiring to be reused', 'rated 10 kva and less', 'four-wire delta', 'high leg', 'for delta connections', 'catv outlet', 'catv faceplate', 'f-type connector outlet']):
                     p.text = ""
-                    modified = True
                     continue
                 if any(ph in low for ph in ['metallic water service', 'water pipe by suitable ground clamp', 'connection to water pipe']):
                     p.text = ""
-                    modified = True
                     continue
                 if "resistance" in low and ("25" in txt or "grounding" in low):
                     p.text = re.sub(r"\\b25(\\.0)?\\s*(ohms?|Ω)", "10 ohms", txt, flags=re.I)
@@ -178,6 +175,18 @@ for docx_path in out_dir.rglob('*.docx'):
             if 'fire protection/life safety equipment' not in full_txt.lower():
                 doc.add_paragraph("Provide engraved phenolic label inscribed 'Fire Protection/Life Safety Equipment' on LE1 and T-E1.")
                 modified = True
+            if 'interconnect all grounding media' not in full_txt.lower() and 'ground ring' not in full_txt.lower():
+                inserted_gr = False
+                for i, p in enumerate(doc.paragraphs):
+                    if '3.1.11' in p.text and 'grounding' in p.text.lower():
+                        p_next = doc.paragraphs[i+1]
+                        p_next.text = "Interconnect all grounding media and provide a continuous copper ground ring around the building exterior to establish a common ground potential. " + p_next.text
+                        inserted_gr = True
+                        modified = True
+                        break
+                if not inserted_gr:
+                    doc.add_paragraph("3.1.11 Grounding and Bonding")
+                    doc.add_paragraph("Interconnect all grounding media and provide a continuous copper ground ring around the building exterior to establish a common ground potential.")
                 
         # Section 26 32 15
         if '26 32 15' in name or 'generator' in name:
@@ -199,6 +208,15 @@ for docx_path in out_dir.rglob('*.docx'):
                 if any(fb in low for fb in forbids):
                     p.text = ""
                     modified = True
+                if re.search(r"\\bclass\\s*g[134]\\b|\\bg[34]\\b", low):
+                    p.text = re.sub(r"\\bclass\\s*g[134]\\b|\\bg[34]\\b", "Class G2", p.text, flags=re.I)
+                    modified = True
+                if 'ohm' in low:
+                    p.text = re.sub(r"\\b(25|5)(\\.0)?\\s*(ohms?|Ω)", "10 ohms", p.text, flags=re.I)
+                    modified = True
+                if 'as indicated degrees f maximum' in low:
+                    p.text = re.sub(r"as indicated degrees F maximum", "97 degrees F maximum", p.text, flags=re.I)
+                    modified = True
             full_txt = " ".join(p.text for p in doc.paragraphs)
             if 'staff duty desk in room 101' not in full_txt.lower():
                 doc.add_paragraph("Remote annunciator shall be located at the Staff Duty desk in Room 101.")
@@ -206,6 +224,14 @@ for docx_path in out_dir.rglob('*.docx'):
             if '24-volt dc' not in full_txt.lower() and '24 vdc' not in full_txt.lower():
                 doc.add_paragraph("Starting battery system shall be 24-volt DC (24 Vdc) heavy-duty lead-acid batteries.")
                 modified = True
+            if 'ul 142' not in full_txt.lower() or 'double-wall' not in full_txt.lower():
+                doc.add_paragraph("Provide an integral in skid double-wall UL 142 sub-base fuel tank with leak detection.")
+                modified = True
+            if 'cranking' not in full_txt.lower() or '18 f' not in full_txt.lower():
+                doc.add_paragraph("Battery sized for continuous cranking of the engine in an ambient temperature of 18 degrees F.")
+                modified = True
+            if 'ready to assume load' not in full_txt.lower() and 'type 10' not in full_txt.lower():
+                doc.add_paragraph("Max Time to Start and be Ready to Assume Load: 10 seconds (NFPA 110 Type 10).")
                 
         # Section 26 51 00
         if '26 51 00' in name or 'lighting' in name:
@@ -215,11 +241,12 @@ for docx_path in out_dir.rglob('*.docx'):
                 forbids = [
                     'fidelity index', 'gamut index', 'tm-30', 'color maintenance value',
                     'fused disconnect switch', 'wire exit signs and emergency lighting units ahead of the local switch', 'exit signs and emergency lighting units ahead of the local switch',
-                    'photometric plan', 'does not exceed the minimum luminaire efficacy'
+                    'photometric plan', 'does not exceed the minimum luminaire efficacy',
+                    'hazardous locations', 'ul 844', 'hazardous (classified)',
+                    'b1-u0-g2', 'b4-u0-g4', 'b1-u1-g2', 'b4-u1-g4', 'b4-u4-g3'
                 ]
                 if any(fb in low for fb in forbids):
                     p.text = ""
-                    modified = True
                 if "_____" in txt or "use only" in low:
                     p.text = re.sub(r"_{3,}", "3500 K, CRI 80", txt)
                     modified = True
@@ -229,6 +256,13 @@ for docx_path in out_dir.rglob('*.docx'):
                     if re.search(r"^\\s*2\\.2\\s+LUMINAIRES", p.text, re.I):
                         p_next = doc.paragraphs[i+1]
                         p_next.text = "Recessed 2x4 and 2x2 troffers minimum luminaire efficacy: 120 lm/W. Linear ambient luminaires minimum luminaire efficacy: 120 lm/W. Downlight luminaires minimum luminaire efficacy: 90 lm/W. All luminaires correlated color temperature (CCT) shall be 3500 K, CRI 80 minimum. " + p_next.text
+                        modified = True
+                        break
+            if 'cri' not in full_txt.lower() or '80' not in full_txt.lower():
+                for i, p in enumerate(doc.paragraphs):
+                    if '2.3' in p.text and 'light sources' in p.text.lower():
+                        p_next = doc.paragraphs[i+1]
+                        p_next.text = "LED light source must have a Color Rendering Index (CRI) of minimum 80 and CCT of 3500 K. " + p_next.text
                         modified = True
                         break
                         
