@@ -1,24 +1,24 @@
 {
   "format": 1,
   "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-  "created": "2026-11-13T17:09:19Z",
+  "created": "2026-11-13T18:26:37Z",
   "harness": {
     "name": "fractal-engineering-harness",
     "model_api": "google-cloud/gemini-4-argon",
-    "tree": "4341c2f7110227b7e8046f97c68b4ebf5a1aada6fced8f09af31b4de0ac841f5",
+    "tree": "e6cb1f13b2cf81fdcab244aba1e5dac1d8ccdedbe2c64a2736e26b1e7a558545",
     "files": {
       ".gitignore": "100644 097dbf358af505c6cf0ff5e6e36e5afd9a4c57c5",
       "LICENSE": "100644 dd2b96eb0641dbd02ca926d8eda8446e9a3f8d38",
       "README.md": "100644 818fc2bfedb89ff62bf3de519ce07bca114bade2",
-      "kernel/contracts.mjs": "100644 a0a9a61dc13f2dbdfd3910b24aee421508e80878",
+      "kernel/contracts.mjs": "100644 7a780c2e0756f74017654f09297d8f9cc0ef2389",
       "kernel/manifest_engine.mjs": "100644 6784dd887413232bf4d57af53bca9d0276d73192",
       "kernel/mcp_client.mjs": "100644 67299a1acd2237e5f545f920aea0e88c11034cc7",
       "package-lock.json": "100644 d46395afe49677e9f0b84c2aa9980f731481e43c",
       "package.json": "100644 de170e3c6cf4a1d51a6f9b91549b7fa97b0f0dd8",
-      "serve.mjs": "100644 12547b91ab01e1d332e39604bba9d0e21104cd40",
+      "serve.mjs": "100644 5de486707a9dbd3acfcd837153d56b6cbd97b762",
       "submission.yaml": "100644 fb4313418b551a8bab4b55e9aee9eeca3959f39f"
     },
-    "commit": "f9e46ae2337bffd038f795893a44bc747cfd7f3f",
+    "commit": "42a92d15367370766f48b14ac5846c586f725eeb",
     "dirty": false
   },
   "tasks": {
@@ -168,14 +168,14 @@
       "skipped": []
     },
     "division-26-specifications": {
-      "run": "fractal-engineering-harness-20261113-214025",
-      "trial": "division-26-specifications__EVHpWhK",
+      "run": "fractal-engineering-harness-20261113-225640",
+      "trial": "division-26-specifications__VrRS2uP",
       "ended": "ok",
-      "reward": 0.268438,
-      "tree": "4341c2f7110227b7e8046f97c68b4ebf5a1aada6fced8f09af31b4de0ac841f5",
+      "reward": 0.0,
+      "tree": "e6cb1f13b2cf81fdcab244aba1e5dac1d8ccdedbe2c64a2736e26b1e7a558545",
       "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
-        "filesystem/final_batch4__electrical_task8_electrical_specs__blind/output/submission.zip": "736714b4971abf6bfd6307d1373da990055411c5"
+        "filesystem/final_batch4__electrical_task8_electrical_specs__blind/output/submission.zip": "a926ddc17151c5a8d54cf11cc384c37cd5dc819e"
       },
       "final_message": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
       "deleted": [],
