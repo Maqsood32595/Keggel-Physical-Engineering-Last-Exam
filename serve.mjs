@@ -24,7 +24,7 @@ import { McpClient } from "./kernel/mcp_client.mjs";
 const MODEL = process.env.MODEL_NAME || "gemini-2.5-flash";
 const MAX_EFFORT_MODELS = ["claude", "glm", "gpt-6", "deepseek-v4"];
 const EFFORT = process.env.REASONING_EFFORT
-  || (MAX_EFFORT_MODELS.some((m) => MODEL.toLowerCase().includes(m)) ? "max" : "high");
+  || (MODEL.toLowerCase().includes("argon") ? "medium" : (MAX_EFFORT_MODELS.some((m) => MODEL.toLowerCase().includes(m)) ? "max" : "high"));
 const CHAT_URL = `${(process.env.MODEL_BASE_URL || "https://generativelanguage.googleapis.com").replace(/\/$/, "")}/chat/completions`;
 const WRAP_UP_SEC = 240;
 const WRAP_UP = "Time is almost up. Stop, verify deliverables on disk, and reply with your summary.";
@@ -65,7 +65,8 @@ UNIVERSAL FRACTAL KERNEL PRINCIPLES:
 12. PROPORTIONAL GROUNDING & CODE-SCALED PROTECTION: In electrical design, whenever phase conductors are increased in size from minimum ampacity to satisfy voltage-drop or thermal limits, strictly enforce NEC 250.122(B) / standard code: increase wire-type equipment grounding conductors (EGC) proportionately according to the circular mil area of the phase conductors (cmil_egc >= cmil_egc_base * (cmil_phase_upsized / cmil_phase_base)). Furthermore, in constraint registers, cross-reference and register every cited code clause (including 75°C termination limits, raceway derating, voltage-drop design loads, cable tray fill limits [sum of cable diameters <= 90% usable tray width per EDS-26 §6.3.2 / Spec 26 05 33 §3.5], codes of record, and cost ledger parity) so that zero hard-gated constraint families are omitted.
 13. CSI SPECIFICATION ARCHITECTURE & BIDIRECTIONAL REFERENCE INTEGRITY: In engineering specifications (CSI MasterFormat, UFGS, Division 01-48), Part 1 Section 1.2 (REFERENCES) must maintain strict 100% bidirectional parity with Part 2 (Products) and Part 3 (Execution): EVERY standard (IEEE, ASTM, NFPA, NEMA, UL, ANSI) cited anywhere in the body text or submittal descriptions MUST be formally enumerated in the Part 1 References list with full title and designation, and every standard listed in Part 1 must be actively cited in the body. Furthermore, catalog every enforceable requirement across each specification section in constraint_register.xlsx with explicit binding section IDs (e.g. R-260573-xx, R-262000-xx) to ensure zero binding register forfeits.
 14. SPREADSHEET LEDGER RECONCILIATION & NUMERICAL SCALE ACCURACY: In bills of materials (BOM), cost schedules, and takeoff workbooks, summary total cells ("basket total") must strictly equal the mathematical sum of all attribution rows (sum(rows) == stated_total). When reporting percentages, markups, overhead, or tax rates, verify the target column convention: if the rubric or template uses whole percentage numbers (e.g., 9.5 for 9.5%), never enter decimal fraction 0.095. For Davis-Bacon or prevailing wage determinations, dynamically propagate modified wage rates into both the written report and the Excel cost takeoff formula cells.
-15. ENVIRONMENTAL ENCLOSURE & CAD DEVICE EXTRACTION: For device takeoffs and electrical equipment placement: damp or wet location devices must explicitly include wet-listed or extra-duty while-in-use covers per UFGS 26 20 00 / NEC 406.9. When extracting device counts from architectural/electrical CAD floor plans, parse vector layers and block attributes directly in Python or crop dense server bays at high resolution, performing multi-pass symbol verification against floor plan schedules to ensure zero missed devices.`;
+15. ENVIRONMENTAL ENCLOSURE & CAD DEVICE EXTRACTION: For device takeoffs and electrical equipment placement: damp or wet location devices must explicitly include wet-listed or extra-duty while-in-use covers per UFGS 26 20 00 / NEC 406.9. When extracting device counts from architectural/electrical CAD floor plans, parse vector layers and block attributes directly in Python or crop dense server bays at high resolution, performing multi-pass symbol verification against floor plan schedules to ensure zero missed devices.
+16. STRICT PACING & TIME-BUDGETED EXECUTION: Reasoning models have high per-turn latency. You operate under a strict container wall-clock limit. Allocate NO MORE than 10-12 turns to initial reconnaissance. By Turn 12-15 at the latest, you MUST generate and write complete first-pass working deliverable files into the target output directory (e.g. output/takeoff.csv, output/bom.csv, output/register.csv, calculation sheets). Never spend dozens of turns writing bespoke OCR tools from scratch or reverse-engineering images in endless loops. Once first-pass files are written on disk, spend remaining turns running automated audits, refining numbers, and resolving constraints.`;
 
 const tool = (name, description, ...params) => ({
   type: "function",
@@ -462,12 +463,23 @@ async function solve(task) {
   let nudges = 0, head = "";
   let auditPerformed = false;
   let forceToolCall = false;
+  let turnCount = 0;
+  let pacingNudged = false;
   const allowRequiredToolChoice = !MODEL.toLowerCase().includes("claude");
 
   try {
     while (true) {
+    turnCount++;
     const left = task.secondsLeft();
     const wrapUp = left !== null && left < WRAP_UP_SEC;
+
+    if (turnCount >= 12 && !pacingNudged && !wrapUp) {
+      pacingNudged = true;
+      messages.push({
+        role: "user",
+        content: `[FRACTAL KERNEL PACING MANDATE]\nYou have completed ${turnCount} turns of reconnaissance. You MUST now transition immediately to Slice 2 (Execution): generate and write complete first-pass deliverable files (e.g. CSVs, BOMs, schedules, reports) directly inside the target output directory in your next turn. Do NOT perform any further exploratory reconnaissance until working deliverables are written to disk.`,
+      });
+    }
 
     // Trigger pre-submission hard-gate verification when wrapping up
     if (wrapUp && !auditPerformed) {

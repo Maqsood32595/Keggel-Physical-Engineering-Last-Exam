@@ -363,7 +363,7 @@ def check_single_file(path_obj, label, require_nonempty=True):
                 try:
                     import docx
                     doc = docx.Document(str(path_obj))
-                    raw_text = " \n".join(p.text for p in doc.paragraphs)
+                    raw_text = " ".join(p.text for p in doc.paragraphs)
                 except Exception:
                     pass
             else:
