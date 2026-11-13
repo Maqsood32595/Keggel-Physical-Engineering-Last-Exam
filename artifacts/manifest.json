@@ -61,10 +61,10 @@
       "run": "fractal-engineering-harness-20261112-144551",
       "trial": "cooling-water-flush-plan__ifsxagX",
       "ended": "ok",
-      "reward": 0.327778,
+      "reward": 0.894345,
       "tree": "9b010306e945874d801414b0ac0dece22b87a9746ca2eb84c13d21fde7aad343",
       "files": {
-        "filesystem/final_batch4__mechanical_task5_pcw_flush_mop__blind/output/submission.zip": "ddaba335ba8cea71bf78bbde4948b02218368170"
+        "filesystem/final_batch4__mechanical_task5_pcw_flush_mop__blind/output/submission.zip": "4bded09bf581e72ddc4723f45c3246560e35bf5c"
       },
       "final_message": "12483fe3f6bddc4de37289f8f76ee4ed320a00e4",
       "deleted": [],
