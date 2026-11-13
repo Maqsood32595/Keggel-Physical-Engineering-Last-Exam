@@ -1,16 +1,16 @@
 {
   "format": 1,
   "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-  "created": "2026-11-12T21:52:21Z",
+  "created": "2026-11-13T09:55:03Z",
   "harness": {
     "name": "fractal-engineering-harness",
     "model_api": "google-cloud/gemini-3.8-flash",
-    "tree": "b4ab89b88b9181c8a6592ee9da7ccdddfea94c018d3f26be8f72cb1b2778d40e",
+    "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
     "files": {
       ".gitignore": "100644 097dbf358af505c6cf0ff5e6e36e5afd9a4c57c5",
       "LICENSE": "100644 dd2b96eb0641dbd02ca926d8eda8446e9a3f8d38",
       "README.md": "100644 818fc2bfedb89ff62bf3de519ce07bca114bade2",
-      "kernel/contracts.mjs": "100644 6eeba9b1ba4296f0f90269ff84e03260514c6ace",
+      "kernel/contracts.mjs": "100644 c02df5cdeedd65bced3027940c24a100e4ea6c14",
       "kernel/manifest_engine.mjs": "100644 6784dd887413232bf4d57af53bca9d0276d73192",
       "kernel/mcp_client.mjs": "100644 67299a1acd2237e5f545f920aea0e88c11034cc7",
       "package-lock.json": "100644 d46395afe49677e9f0b84c2aa9980f731481e43c",
@@ -18,7 +18,7 @@
       "serve.mjs": "100644 3799e55d7b0a0a6c2dbea00b819de69b3a136d28",
       "submission.yaml": "100644 930663452432ffc9844ef9d66470d2b6dddfc28f"
     },
-    "commit": "b8b6d0268f4a183387ea26cecd4d29a5bc781707",
+    "commit": "6404c7661f8704d7e49b8dacc11c29a2e32bc8c9",
     "dirty": false
   },
   "tasks": {
@@ -84,12 +84,12 @@
       "skipped": []
     },
     "eor-review-corrections": {
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "run": "fractal-engineering-harness-20261113-012017",
       "trial": "eor-review-corrections__VyrGbJD",
       "ended": "ok",
       "reward": 0.170196,
       "tree": "b4ab89b88b9181c8a6592ee9da7ccdddfea94c018d3f26be8f72cb1b2778d40e",
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
         "filesystem/dc_structural__eor_revision__blind/output/submission.zip": "64d9743b17761ac7b548599c1380c30fa3b4cc8e"
       },
@@ -98,12 +98,12 @@
       "skipped": []
     },
     "roof-deck-design": {
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "run": "fractal-engineering-harness-20261113-012017",
       "trial": "roof-deck-design__i92ydsy",
       "ended": "ok",
       "reward": 0.209524,
       "tree": "b4ab89b88b9181c8a6592ee9da7ccdddfea94c018d3f26be8f72cb1b2778d40e",
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
         "filesystem/final_batch4__structural_task7_roof_deck_design__blind/output/submission.zip": "666070c2f0dfde990ce59ce8b787330e51c137d1"
       },
@@ -112,12 +112,12 @@
       "skipped": []
     },
     "seismic-diaphragm-shear": {
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "run": "fractal-engineering-harness-20261113-012017",
       "trial": "seismic-diaphragm-shear__pofYyqJ",
       "ended": "ok",
       "reward": 0.211765,
       "tree": "b4ab89b88b9181c8a6592ee9da7ccdddfea94c018d3f26be8f72cb1b2778d40e",
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
         "filesystem/final_batch4__structural_task6_seismic_diaphragm_shear__blind/output/submission.zip": "3078c7ac00c15ae887c924bfa555f82417d742c8"
       },
@@ -126,16 +126,58 @@
       "skipped": []
     },
     "wind-diaphragm-shear": {
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "run": "fractal-engineering-harness-20261113-012017",
       "trial": "wind-diaphragm-shear__hdd42op",
       "ended": "ok",
       "reward": 0.146032,
       "tree": "b4ab89b88b9181c8a6592ee9da7ccdddfea94c018d3f26be8f72cb1b2778d40e",
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
         "filesystem/final_batch4__structural_task5_wind_diaphragm_shear__blind/output/submission.zip": "067f610d39e9a66ab2fff0d9f14a467784ba9e03"
       },
       "final_message": "eda27a7f89f875c9444e2701ee8493e09145bd78",
+      "deleted": [],
+      "skipped": []
+    },
+    "data-hall-device-takeoff": {
+      "run": "fractal-engineering-harness-20261113-134814",
+      "trial": "data-hall-device-takeoff__NiyL5gb",
+      "ended": "ok",
+      "reward": 0.156522,
+      "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
+      "files": {
+        "filesystem/final_batch4__electrical_task17_ec_0205_d100__blind/output/submission.zip": "07b8e3651cedd6ac151086a303c506d1d558190a"
+      },
+      "final_message": "fca51fe8e1190e8ba5198610ad33e197f8e00d76",
+      "deleted": [],
+      "skipped": []
+    },
+    "division-26-specifications": {
+      "run": "fractal-engineering-harness-20261113-134814",
+      "trial": "division-26-specifications__MmLjSL7",
+      "ended": "ok",
+      "reward": 0.140132,
+      "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
+      "files": {
+        "filesystem/final_batch4__electrical_task8_electrical_specs__blind/output/submission.zip": "f1cf5c97929dc214afbf6a7eb6391c7b73e7feba"
+      },
+      "final_message": "5977d3b568f1ce00d75f5920352aa97088def948",
+      "deleted": [],
+      "skipped": []
+    },
+    "mv-conveyance-study": {
+      "run": "fractal-engineering-harness-20261113-134814",
+      "trial": "mv-conveyance-study__FX5QkwE",
+      "ended": "ok",
+      "reward": 0.136923,
+      "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
+      "files": {
+        "filesystem/final_batch4__electrical_task12_conveyance_study__blind/output/submission.zip": "b1c9848d591f1d0e6791aaec87fd3f26d1aef64f"
+      },
+      "final_message": "6a45e15a8cd54b29ab7847a93c6f72abba1339bb",
       "deleted": [],
       "skipped": []
     }
