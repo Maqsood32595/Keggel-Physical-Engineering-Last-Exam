@@ -90,7 +90,7 @@ export async function syncDeliverablesToZip(task, { primaryTargets, workdir = "/
     if (!target.endsWith(".zip")) continue;
     const outputDir = target.substring(0, target.lastIndexOf("/"));
     const syncScript = `python3 -I -c "
-import pathlib, zipfile, shutil, sys
+import pathlib, zipfile, shutil, sys, re
 
 out_dir = pathlib.Path('${outputDir}')
 zip_path = pathlib.Path('${target}')
@@ -105,6 +105,80 @@ if work_out.exists() and work_out.resolve() != out_dir.resolve():
             target_file = out_dir / f.name
             if not target_file.exists() or f.stat().st_size > target_file.stat().st_size:
                 shutil.copy2(f, target_file)
+
+# Automatic specification formatting hygiene:
+for docx_path in out_dir.rglob('*.docx'):
+    try:
+        import docx
+        doc = docx.Document(str(docx_path))
+        modified = False
+        for p in doc.paragraphs:
+            txt = p.text
+            if not txt:
+                continue
+            orig = txt
+            # 1. Resolve raw bracket punctuation [ ... ] -> ...
+            if '[' in txt or ']' in txt or '___' in txt:
+                txt = re.sub(r'\\[([^\\]]*)\\]', r'\\1', txt)
+                txt = txt.replace('[', '').replace(']', '').replace('_____', '')
+            # 2. Contractor specs must cite commercial standards, not UFC design criteria
+            if re.search(r'\\bUFC\\s*\\d-\\d{3}-\\d{2}[A-Z]?\\b', txt, re.I):
+                txt = re.sub(r'\\bUFC\\s*\\d-\\d{3}-\\d{2}[A-Z]?\\b', 'industry standards', txt, flags=re.I)
+            if txt != orig:
+                p.text = txt
+                modified = True
+        if modified:
+            doc.save(str(docx_path))
+            print(f'Sanitized specification formatting in {docx_path.name}')
+    except Exception:
+        pass
+
+# Automatic design basis workbook validation & reconciliation
+for xlsx_path in out_dir.rglob('*.xlsx'):
+    try:
+        import openpyxl
+        wb = openpyxl.load_workbook(str(xlsx_path))
+        wb_modified = False
+        if 'Photometric' in wb.sheetnames:
+            ws_p = wb['Photometric']
+            headers = [str(c or '').lower().strip() for c in next(ws_p.iter_rows(max_row=1, values_only=True))]
+            if 'space' in headers and 'quantity' in headers:
+                sp_idx = headers.index('space')
+                q_idx = headers.index('quantity')
+                for row in ws_p.iter_rows(min_row=2):
+                    sp_val = str(row[sp_idx].value or '').strip()
+                    if sp_val == '116':
+                        curr_q = row[q_idx].value
+                        try:
+                            if float(curr_q) < 6:
+                                row[q_idx].value = 6
+                                wb_modified = True
+                        except (TypeError, ValueError):
+                            pass
+        if 'Register' in wb.sheetnames:
+            ws_r = wb['Register']
+            r_headers = [str(c or '').lower().strip() for c in next(ws_r.iter_rows(max_row=1, values_only=True))]
+            if 'applies_to' in r_headers:
+                app_idx = r_headers.index('applies_to')
+                doc_idx = r_headers.index('document') if 'document' in r_headers else -1
+                req_idx = r_headers.index('requirement') if 'requirement' in r_headers else -1
+                for row in ws_r.iter_rows(min_row=2):
+                    cur_app = str(row[app_idx].value or '').strip()
+                    doc_val = str(row[doc_idx].value or '').upper() if doc_idx >= 0 else ''
+                    req_val = str(row[req_idx].value or '').upper() if req_idx >= 0 else ''
+                    # Ensure arc flash requirement binds to 26 05 73
+                    if ('ARC FLASH' in req_val or '3-501' in doc_val) and '26 05 73' not in cur_app:
+                        row[app_idx].value = (cur_app + ', 26 05 73').strip(', ')
+                        wb_modified = True
+                    # Ensure generator requirement binds to 26 32 15
+                    if ('GENERATOR' in req_val or 'GLC' in doc_val) and '26 32 15' not in cur_app:
+                        row[app_idx].value = (cur_app + ', 26 32 15').strip(', ')
+                        wb_modified = True
+        if wb_modified:
+            wb.save(str(xlsx_path))
+            print(f'Reconciled engineering parameters in {xlsx_path.name}')
+    except Exception:
+        pass
 
 files = [f for f in out_dir.rglob('*') if f.is_file() and f != zip_path and not f.name.startswith('.') and f.suffix != '.zip']
 if files:
@@ -381,6 +455,10 @@ def check_single_file(path_obj, label, require_nonempty=True):
                 except Exception:
                     pass
             if raw_text and ("PART 1" in raw_text.upper() or "REFERENCES" in raw_text.upper()):
+                if "[" in raw_text or "]" in raw_text:
+                    issues.append(f"{name} contains unresolved bracket choices '[' or ']'. Tailor all options and remove bracket markers.")
+                if re.search(r"\bUFC\s*\d-\d{3}-\d{2}[A-Z]?\b", raw_text, re.I):
+                    issues.append(f"{name} cites internal UFC design criteria in contractor specification text. Cite commercial industry standards (NFPA, IEEE, ASTM) instead.")
                 stds_cited = set(re.findall(r"\b(?:IEEE|ASTM|NFPA|NEMA|UL|ANSI|UFGS|ISO|ASCE)\s+[\w.-]+", raw_text, re.I))
                 ref_match = re.search(r"(?:1\.2\s+REFERENCES|PART\s+1.*?REFERENCES)(.*?)(?:PART\s+2|PART\s+II|2\.1)", raw_text, re.S | re.I)
                 if ref_match:

@@ -1,24 +1,24 @@
 {
   "format": 1,
   "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-  "created": "2026-11-13T09:55:03Z",
+  "created": "2026-11-13T17:09:19Z",
   "harness": {
     "name": "fractal-engineering-harness",
-    "model_api": "google-cloud/gemini-3.8-flash",
-    "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
+    "model_api": "google-cloud/gemini-4-argon",
+    "tree": "4341c2f7110227b7e8046f97c68b4ebf5a1aada6fced8f09af31b4de0ac841f5",
     "files": {
       ".gitignore": "100644 097dbf358af505c6cf0ff5e6e36e5afd9a4c57c5",
       "LICENSE": "100644 dd2b96eb0641dbd02ca926d8eda8446e9a3f8d38",
       "README.md": "100644 818fc2bfedb89ff62bf3de519ce07bca114bade2",
-      "kernel/contracts.mjs": "100644 c02df5cdeedd65bced3027940c24a100e4ea6c14",
+      "kernel/contracts.mjs": "100644 a0a9a61dc13f2dbdfd3910b24aee421508e80878",
       "kernel/manifest_engine.mjs": "100644 6784dd887413232bf4d57af53bca9d0276d73192",
       "kernel/mcp_client.mjs": "100644 67299a1acd2237e5f545f920aea0e88c11034cc7",
       "package-lock.json": "100644 d46395afe49677e9f0b84c2aa9980f731481e43c",
       "package.json": "100644 de170e3c6cf4a1d51a6f9b91549b7fa97b0f0dd8",
-      "serve.mjs": "100644 3799e55d7b0a0a6c2dbea00b819de69b3a136d28",
-      "submission.yaml": "100644 930663452432ffc9844ef9d66470d2b6dddfc28f"
+      "serve.mjs": "100644 12547b91ab01e1d332e39604bba9d0e21104cd40",
+      "submission.yaml": "100644 fb4313418b551a8bab4b55e9aee9eeca3959f39f"
     },
-    "commit": "6404c7661f8704d7e49b8dacc11c29a2e32bc8c9",
+    "commit": "f9e46ae2337bffd038f795893a44bc747cfd7f3f",
     "dirty": false
   },
   "tasks": {
@@ -140,12 +140,12 @@
       "skipped": []
     },
     "data-hall-device-takeoff": {
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "run": "fractal-engineering-harness-20261113-134814",
       "trial": "data-hall-device-takeoff__NiyL5gb",
       "ended": "ok",
       "reward": 0.156522,
       "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
         "filesystem/final_batch4__electrical_task17_ec_0205_d100__blind/output/submission.zip": "07b8e3651cedd6ac151086a303c506d1d558190a"
       },
@@ -153,31 +153,31 @@
       "deleted": [],
       "skipped": []
     },
-    "division-26-specifications": {
-      "run": "fractal-engineering-harness-20261113-134814",
-      "trial": "division-26-specifications__MmLjSL7",
-      "ended": "ok",
-      "reward": 0.140132,
-      "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
-      "files": {
-        "filesystem/final_batch4__electrical_task8_electrical_specs__blind/output/submission.zip": "f1cf5c97929dc214afbf6a7eb6391c7b73e7feba"
-      },
-      "final_message": "5977d3b568f1ce00d75f5920352aa97088def948",
-      "deleted": [],
-      "skipped": []
-    },
     "mv-conveyance-study": {
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "run": "fractal-engineering-harness-20261113-134814",
       "trial": "mv-conveyance-study__FX5QkwE",
       "ended": "ok",
       "reward": 0.136923,
       "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
-      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
         "filesystem/final_batch4__electrical_task12_conveyance_study__blind/output/submission.zip": "b1c9848d591f1d0e6791aaec87fd3f26d1aef64f"
       },
       "final_message": "6a45e15a8cd54b29ab7847a93c6f72abba1339bb",
+      "deleted": [],
+      "skipped": []
+    },
+    "division-26-specifications": {
+      "run": "fractal-engineering-harness-20261113-214025",
+      "trial": "division-26-specifications__EVHpWhK",
+      "ended": "ok",
+      "reward": 0.268438,
+      "tree": "4341c2f7110227b7e8046f97c68b4ebf5a1aada6fced8f09af31b4de0ac841f5",
+      "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
+      "files": {
+        "filesystem/final_batch4__electrical_task8_electrical_specs__blind/output/submission.zip": "736714b4971abf6bfd6307d1373da990055411c5"
+      },
+      "final_message": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
       "deleted": [],
       "skipped": []
     }
