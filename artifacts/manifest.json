@@ -159,10 +159,10 @@
       "run": "fractal-engineering-harness-20261113-134814",
       "trial": "mv-conveyance-study__FX5QkwE",
       "ended": "ok",
-      "reward": 0.136923,
+      "reward": 0.499143,
       "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
       "files": {
-        "filesystem/final_batch4__electrical_task12_conveyance_study__blind/output/submission.zip": "b1c9848d591f1d0e6791aaec87fd3f26d1aef64f"
+        "filesystem/final_batch4__electrical_task12_conveyance_study__blind/output/submission.zip": "52b2a3cb9428813310b77a1986b11114a3e8cede"
       },
       "final_message": "6a45e15a8cd54b29ab7847a93c6f72abba1339bb",
       "deleted": [],
