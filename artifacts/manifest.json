@@ -89,10 +89,10 @@
       "run": "fractal-engineering-harness-20261113-012017",
       "trial": "eor-review-corrections__VyrGbJD",
       "ended": "ok",
-      "reward": 0.170196,
+      "reward": 0.966417,
       "tree": "b4ab89b88b9181c8a6592ee9da7ccdddfea94c018d3f26be8f72cb1b2778d40e",
       "files": {
-        "filesystem/dc_structural__eor_revision__blind/output/submission.zip": "64d9743b17761ac7b548599c1380c30fa3b4cc8e"
+        "filesystem/dc_structural__eor_revision__blind/output/submission.zip": "a6ed9de585f995b02d783a313db0a59187f0eabb"
       },
       "final_message": "b3d60e80d9b7b90b489c87800b666494625fce98",
       "deleted": [],
