@@ -145,10 +145,10 @@
       "run": "fractal-engineering-harness-20261113-134814",
       "trial": "data-hall-device-takeoff__NiyL5gb",
       "ended": "ok",
-      "reward": 0.156522,
+      "reward": 0.969898,
       "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
       "files": {
-        "filesystem/final_batch4__electrical_task17_ec_0205_d100__blind/output/submission.zip": "07b8e3651cedd6ac151086a303c506d1d558190a"
+        "filesystem/final_batch4__electrical_task17_ec_0205_d100__blind/output/submission.zip": "76759c3d915a27e3c941c8e30ed136b0c77de9b9"
       },
       "final_message": "fca51fe8e1190e8ba5198610ad33e197f8e00d76",
       "deleted": [],
