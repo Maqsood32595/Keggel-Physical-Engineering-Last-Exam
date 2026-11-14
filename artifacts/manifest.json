@@ -103,10 +103,10 @@
       "run": "fractal-engineering-harness-20261113-012017",
       "trial": "roof-deck-design__i92ydsy",
       "ended": "ok",
-      "reward": 0.209524,
+      "reward": 0.83306,
       "tree": "b4ab89b88b9181c8a6592ee9da7ccdddfea94c018d3f26be8f72cb1b2778d40e",
       "files": {
-        "filesystem/final_batch4__structural_task7_roof_deck_design__blind/output/submission.zip": "666070c2f0dfde990ce59ce8b787330e51c137d1"
+        "filesystem/final_batch4__structural_task7_roof_deck_design__blind/output/submission.zip": "4e485da9a553cae7e1e7ef79ba77d60eab57c59a"
       },
       "final_message": "79e0cdf2e7ae22f18943da9fea7c60893616d02e",
       "deleted": [],
