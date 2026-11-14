@@ -1,0 +1,1 @@
+Completed IFC4 schematic site design for two-hall data center campus on wetland-divided greenfield parcel (p6_002). Placed data halls, substation, generator yard, cooling plant, landscape berm, and stormwater retention with continuous road and medium-voltage networks satisfying all 17 binding criteria (100% FEASIBLE).

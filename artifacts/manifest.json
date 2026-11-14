@@ -181,6 +181,19 @@
       "final_message": "e7a96fd7d81ddc226f8b0b8040d047a1557517da",
       "deleted": [],
       "skipped": []
+    },
+    "data-center-site-model": {
+      "run": "fractal-engineering-harness-20261114-190000",
+      "trial": "data-center-site-model__p6_002",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
+      "files": {
+        "app/files/frontier__DCBim__p6_002/submission/model.ifc": "728cfbae71cdbfdb2af1d5988a32ffab5a43b53d"
+      },
+      "final_message": "69b1bb32b28307f716a99ea11e2c4cb4dc7529ad",
+      "deleted": [],
+      "skipped": []
     }
   }
 }
