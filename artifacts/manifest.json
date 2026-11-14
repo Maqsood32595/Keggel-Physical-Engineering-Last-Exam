@@ -117,10 +117,10 @@
       "run": "fractal-engineering-harness-20261113-012017",
       "trial": "seismic-diaphragm-shear__pofYyqJ",
       "ended": "ok",
-      "reward": 0.211765,
+      "reward": 0.859488,
       "tree": "b4ab89b88b9181c8a6592ee9da7ccdddfea94c018d3f26be8f72cb1b2778d40e",
       "files": {
-        "filesystem/final_batch4__structural_task6_seismic_diaphragm_shear__blind/output/submission.zip": "3078c7ac00c15ae887c924bfa555f82417d742c8"
+        "filesystem/final_batch4__structural_task6_seismic_diaphragm_shear__blind/output/submission.zip": "be4912daafd5b074a900497caa296741dbd301ae"
       },
       "final_message": "1de0659283fa6170764d83b19d507104c6b17924",
       "deleted": [],
