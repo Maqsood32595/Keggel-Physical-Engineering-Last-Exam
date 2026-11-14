@@ -240,6 +240,53 @@
       "final_message": "75357fd1bfaffbcaa0ea1af3766688bc0d9a4159",
       "deleted": [],
       "skipped": []
+    },
+    "backfeed-energization-reply": {
+      "run": "fractal-engineering-harness-20261114-200000",
+      "trial": "backfeed-energization-reply__halbray",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
+      "files": {
+        "app/output/.helpers_cache/db_diff.txt": "1dcd428ddc6d9d829a1e32f0746b65ac41dc311d",
+        "app/tools/.apps_data/nextcloud_browser/nextcloud.db": "9e9fda614f933dcf6224564c7c670936b31a2ec1",
+        "app/tools/.apps_data/nextcloud_browser/files/DER_Program/Correspondence/Halbray_Backfeed_Reply.docx": "7e42c6fbd5e2a4b3b8dc008168e20899e0551c8a",
+        "app/tools/.apps_data/openproject/openproject_dump.sql": "2590280c79e457a89d185e3159a4dde101ec4f42",
+        "filesystem/Halbray_Backfeed_Reply.docx": "7e42c6fbd5e2a4b3b8dc008168e20899e0551c8a"
+      },
+      "final_message": "7e02738c7d6f7a71706d860916a1f4092c1fd561",
+      "deleted": [],
+      "skipped": []
+    },
+    "permission-to-operate-memo": {
+      "run": "fractal-engineering-harness-20261114-200000",
+      "trial": "permission-to-operate-memo__corwyn",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
+      "files": {
+        "app/output/.helpers_cache/db_diff.txt": "abbfe4db6067f94efe0039e600567d1ac3208e35",
+        "app/tools/.apps_data/nextcloud_browser/nextcloud.db": "dc6737d616a3fe78b0ca69b3b2310f9eebaa822b",
+        "app/tools/.apps_data/nextcloud_browser/files/DER_Program/Correspondence/Corwyn_PTO_Memo.docx": "cbcc0f18da19f4a539cf6b3c05e7943fe8ed608f",
+        "app/tools/.apps_data/openproject/openproject_dump.sql": "546ca3ad727d7840540b5cf1c22cacf44a04b659",
+        "filesystem/Corwyn_PTO_Memo.docx": "cbcc0f18da19f4a539cf6b3c05e7943fe8ed608f"
+      },
+      "final_message": "18cd7e6f1471f3dde5ae3ec369137bf7659ee2a6",
+      "deleted": [],
+      "skipped": []
+    },
+    "landscape-sheet-revision": {
+      "run": "fractal-engineering-harness-20261114-200000",
+      "trial": "landscape-sheet-revision__dsr",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
+      "files": {
+        "app/files/output/Callaway_Memo.docx": "a7a6fe6e54467cd2e278b8fc51b7131731d46a66"
+      },
+      "final_message": "21e8ff7700da61df91f3a394cf5301f66bb27d4b",
+      "deleted": [],
+      "skipped": []
     }
   }
 }

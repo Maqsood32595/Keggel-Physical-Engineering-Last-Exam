@@ -1,0 +1,22 @@
+<database_changes>
+=== DATABASE CHANGES SUMMARY ===
+Total rows added: 2
+Total rows deleted: 0
+Total rows modified: 0
+
+Tables with changes (2):
+  .apps_data/nextcloud_browser/nextcloud.db:oc_filecache: +1 added, -0 deleted, ~0 modified
+  .apps_data/openproject/openproject_dump.sql:work_packages: +1 added, -0 deleted, ~0 modified
+
+=== Database: .apps_data/nextcloud_browser/nextcloud.db ===
+
+--- Table: oc_filecache ---
+Rows Added (1):
+  {"fileid": 6, "storage": 1, "path": "files/DER_Program/Correspondence/Corwyn_PTO_Memo.docx", "path_hash": null, "parent": null, "name": "Corwyn_PTO_Memo.docx", "mimetype": 2, "mimepart": null, "size": 39961, "mtime": null, "storage_mtime": null, "encrypted": null, "unencrypted_size": null, "etag": null, "permissions": null, "checksum": ""}
+
+=== Database: .apps_data/openproject/openproject_dump.sql ===
+
+--- Table: work_packages ---
+Rows Added (1):
+  {"id": "51", "subject": "Corwyn Office Complex PV - Permission to Operate Determination and Pre-PTO Amendment", "status_id": "1", "parent_id": null, "description": "Creates one work package for Corwyn Office Complex PV in the DER Program Backlog Review project recording the determination that Permission to Operate is withheld for 08/04/2025 on the record as it stands. Lists Corwyn Realty Partners' signature of a written amendment permitting pre-PTO energization among what has to be settled before Permission to Operate."}
+</database_changes>

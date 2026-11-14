@@ -1,0 +1,22 @@
+<database_changes>
+=== DATABASE CHANGES SUMMARY ===
+Total rows added: 2
+Total rows deleted: 0
+Total rows modified: 0
+
+Tables with changes (2):
+  .apps_data/nextcloud_browser/nextcloud.db:oc_filecache: +1 added, -0 deleted, ~0 modified
+  .apps_data/openproject/openproject_dump.sql:work_packages: +1 added, -0 deleted, ~0 modified
+
+=== Database: .apps_data/nextcloud_browser/nextcloud.db ===
+
+--- Table: oc_filecache ---
+Rows Added (1):
+  {"fileid": 5, "storage": 1, "path": "files/DER_Program/Correspondence/Halbray_Backfeed_Reply.docx", "path_hash": null, "parent": null, "name": "Halbray_Backfeed_Reply.docx", "mimetype": 2, "mimepart": null, "size": 39908, "mtime": null, "storage_mtime": null, "encrypted": null, "unencrypted_size": null, "etag": null, "permissions": null, "checksum": ""}
+
+=== Database: .apps_data/openproject/openproject_dump.sql ===
+
+--- Table: work_packages ---
+Rows Added (1):
+  {"id": "50", "subject": "Halbray Field Solar Site 3 - Pre-PTO backfeed remediation items", "status_id": "1", "parent_id": null, "description": "Creates one work package for Halbray Field Solar Site 3 in the DER Program Backlog Review project that lists the Type TC tracker drive cable, the Type USE-2 inverter output conductors and the enamel strut among what Halbray has to settle before the backfeed. Specifically: the Type TC tracker drive cable along tracker row piles must be put in a raceway or replaced with a code-permitted wiring method; the Type USE-2 inverter output conductors on the skids must be replaced with code-permitted conductors above ground; the enamel strut at the array north edge must be replaced or given outdoor corrosion protection; and Kelloway Township final approval under permit EP-25-0418 must be obtained."}
+</database_changes>
