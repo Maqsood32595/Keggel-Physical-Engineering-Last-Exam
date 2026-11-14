@@ -326,6 +326,32 @@
       "final_message": "920ff465141a5eb36dd7a8bb8b9ecb3a6068b4a1",
       "deleted": [],
       "skipped": []
+    },
+    "fire-solve-convergence": {
+      "run": "fractal-engineering-harness-20261115-051500",
+      "trial": "t2-resolve-the-non-converging-desert-fire-solve-d326069e",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "6be6977d3521f7c14b800ff3226d1a073930389634c4beef715be229c62ce5a3",
+      "files": {
+        "filesystem/CFDME-2025-041_transient_solve_disposition_revA.docx": "c8c36a1cff840ac14a3fa17d0ad26c64a44ac3dd"
+      },
+      "final_message": "133946877c5565f9e2191cad734401af35b9ed30",
+      "deleted": [],
+      "skipped": []
+    },
+    "les-mesh-resolution": {
+      "run": "fractal-engineering-harness-20261115-051500",
+      "trial": "t3-report-mesh-resolution-for-the-les-fire-case-dc62bbff",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "6be6977d3521f7c14b800ff3226d1a073930389634c4beef715be229c62ce5a3",
+      "files": {
+        "filesystem/CFDME-2025-041_resolution_note_revA.docx": "a1342fef77a07699e35e8d013f60e3aa6fc4709a"
+      },
+      "final_message": "59bda9404be9671947bae034ba9b351205f66916",
+      "deleted": [],
+      "skipped": []
     }
   }
 }
