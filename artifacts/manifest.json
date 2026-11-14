@@ -194,6 +194,52 @@
       "final_message": "69b1bb32b28307f716a99ea11e2c4cb4dc7529ad",
       "deleted": [],
       "skipped": []
+    },
+    "solar-supplemental-review": {
+      "run": "fractal-engineering-harness-20261114-200000",
+      "trial": "solar-supplemental-review__bramwick",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
+      "files": {
+        "filesystem/Bramwick_Commons_Screen_Memo.docx": "0c6d18ed441b2a7eb013546effaf19562242b7dd"
+      },
+      "final_message": "14578063afdbcf2108fa5bee0b22d9f939c206f6",
+      "deleted": [],
+      "skipped": []
+    },
+    "solar-witness-test-package": {
+      "run": "fractal-engineering-harness-20261114-200000",
+      "trial": "solar-witness-test-package__municipal",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
+      "files": {
+        "app/tools/.apps_data/nextcloud_browser/files/DER_Program/Commissioning/Municipal/Municipal_Witness_Test_Package.docx": "e2e52b41e73d63bda7048cf0d21f021e0b93b801",
+        "app/tools/.apps_data/nextcloud_browser/nextcloud.db": "90810bc3741388809ddcc7e4cd283b16fbf033ab",
+        "app/tools/.apps_data/openproject/openproject_dump.sql": "cd5b42b9d4d2c0f4636ef9178ef32513fbbe083c",
+        "filesystem/Municipal_Witness_Test_Package.docx": "e2e52b41e73d63bda7048cf0d21f021e0b93b801"
+      },
+      "final_message": "ae87de6754ffca57f1cc1714d5079b1bf67a910d",
+      "deleted": [],
+      "skipped": []
+    },
+    "pre-application-capacity-response": {
+      "run": "fractal-engineering-harness-20261114-200000",
+      "trial": "pre-application-capacity-response__aln108",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "34a30b4a7b3faeafe4bf7377e3258766fa6e2a2741b3417300bd2326a4a8f52b",
+      "files": {
+        "app/output/.helpers_cache/db_diff.txt": "96266991af83e8415f605cc42d24f2eabac587da",
+        "app/tools/.apps_data/nextcloud_browser/files/DER_Program/Correspondence/ALN-108_PreApplication_Response.docx": "81cc88cade7be283e3c574026c71f4ea8cd0b4fa",
+        "app/tools/.apps_data/nextcloud_browser/nextcloud.db": "58d5384f9f293ff50aa1e64bcae6f96409b86543",
+        "app/tools/.apps_data/openproject/openproject_dump.sql": "466a61db90497c4c0e3922c49179d73d50e90931",
+        "filesystem/ALN-108_PreApplication_Response.docx": "81cc88cade7be283e3c574026c71f4ea8cd0b4fa"
+      },
+      "final_message": "75357fd1bfaffbcaa0ea1af3766688bc0d9a4159",
+      "deleted": [],
+      "skipped": []
     }
   }
 }

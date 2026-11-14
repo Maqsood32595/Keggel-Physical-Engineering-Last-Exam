@@ -1,0 +1,32 @@
+<database_changes>
+=== DATABASE CHANGES SUMMARY ===
+Total rows added: 2
+Total rows deleted: 0
+Total rows modified: 1
+
+Tables with changes (3):
+  .apps_data/nextcloud_browser/nextcloud.db:oc_filecache: +1 added, -0 deleted, ~0 modified
+  .apps_data/openproject/openproject_dump.sql:journals: +1 added, -0 deleted, ~0 modified
+  .apps_data/openproject/openproject_dump.sql:work_packages: +0 added, -0 deleted, ~1 modified
+
+(2 tables unchanged)
+
+=== Database: .apps_data/nextcloud_browser/nextcloud.db ===
+
+--- Table: oc_filecache ---
+Rows Added (1):
+  {"fileid": 4, "storage": 1, "path": "files/DER_Program/Correspondence/ALN-108_PreApplication_Response.docx", "path_hash": null, "parent": null, "name": "ALN-108_PreApplication_Response.docx", "mimetype": 2, "mimepart": null, "size": 43211, "mtime": null, "storage_mtime": null, "encrypted": null, "unencrypted_size": null, "etag": null, "permissions": null, "checksum": ""}
+
+=== Database: .apps_data/openproject/openproject_dump.sql ===
+
+--- Table: journals ---
+(this table is not in the initial snapshot, so all its rows show as added)
+Rows Added (1):
+  {"id": "1", "journable_type": "WorkPackage", "journable_id": "44", "notes": "DER Program Office written determination on Case 44 (Feeder ALN-108 Pre-Application Request, Northline Renewables LLC, 3 MW pure generation): Confirmation of currently available capacity figure requested by Northline Renewables is withheld pending confirmation of current feeder state. All project-sizing reliance by Northline Renewables is conditional on Distribution Planning confirming interim position. Illustrative calculations show 3.0 MW map baseline less 2.2 MW queued additions (Grantwyck Solar 1.2 MW, Cindermere Renewables 1.0 MW) yielding 0.8 MW illustrative headroom. Action assigned to Distribution Planning: DER Program Office requests priority hosting-capacity refresh for Feeder ALN-108 citing RA-2025-07-01 section 3.7. Mandatory full feeder-level study required. Pre-application dialogue offered post-refresh. Case closed.", "version": "1"}
+
+--- Table: work_packages ---
+Rows Modified (1):
+  Before: {"id": "44", "subject": "Respond to the Feeder ALN-108 pre-application request", "status_id": "1", "parent_id": null, "description": "A pre-application request dated 07/02/2025 asks for available capacity on Feeder ALN-108 and cites the published hosting capacity map. Determine the figure the response should carry and what the requester should be advised. Flag any map maintenance the request implies."}
+  After:  {"id": "44", "subject": "Respond to the Feeder ALN-108 pre-application request", "status_id": "12", "parent_id": null, "description": "A pre-application request dated 07/02/2025 asks for available capacity on Feeder ALN-108 and cites the published hosting capacity map. Determine the figure the response should carry and what the requester should be advised. Flag any map maintenance the request implies."}
+
+</database_changes>
