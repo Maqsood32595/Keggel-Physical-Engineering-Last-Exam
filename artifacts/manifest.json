@@ -287,6 +287,45 @@
       "final_message": "21e8ff7700da61df91f3a394cf5301f66bb27d4b",
       "deleted": [],
       "skipped": []
+    },
+    "data-hall-mep-routing": {
+      "run": "fractal-engineering-harness-20261115-040000",
+      "trial": "dc_model__hall_seed000_d000__mep_routing",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "9264e9cd4aea4c3604d3579184bc72a7ba38c27687071249640ddf43998ac03e",
+      "files": {
+        "app/files/dc_model__hall_seed000_d000__mep_routing/output/solution.py": "79fe5876978514298235cc2943c3a95f79ac0249"
+      },
+      "final_message": "f13148fc65673aa17c11c596baf50525d0d18fbf",
+      "deleted": [],
+      "skipped": []
+    },
+    "data-hall-mep-routing-offset": {
+      "run": "fractal-engineering-harness-20261115-040000",
+      "trial": "dc_model__hall_seed005_d100__mep_routing",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "9264e9cd4aea4c3604d3579184bc72a7ba38c27687071249640ddf43998ac03e",
+      "files": {
+        "app/files/dc_model__hall_seed005_d100__mep_routing/output/solution.py": "1768a85be1942aaa2170d611c98741654ffda7ba"
+      },
+      "final_message": "4941a2d598390a3bd0b85f7b12c444a475b5946e",
+      "deleted": [],
+      "skipped": []
+    },
+    "heat-rejection-life-cycle-cost": {
+      "run": "fractal-engineering-harness-20261115-040000",
+      "trial": "final_batch4__mechanical_task3_ct_heat_lcc__blind",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "9264e9cd4aea4c3604d3579184bc72a7ba38c27687071249640ddf43998ac03e",
+      "files": {
+        "filesystem/final_batch4__mechanical_task3_ct_heat_lcc__blind/output/submission.zip": "9ed77628f9ed1b85f461f7bbdf95f6765b5be022"
+      },
+      "final_message": "920ff465141a5eb36dd7a8bb8b9ecb3a6068b4a1",
+      "deleted": [],
+      "skipped": []
     }
   }
 }
