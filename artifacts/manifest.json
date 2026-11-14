@@ -131,10 +131,10 @@
       "run": "fractal-engineering-harness-20261113-012017",
       "trial": "wind-diaphragm-shear__hdd42op",
       "ended": "ok",
-      "reward": 0.146032,
+      "reward": 0.73762,
       "tree": "b4ab89b88b9181c8a6592ee9da7ccdddfea94c018d3f26be8f72cb1b2778d40e",
       "files": {
-        "filesystem/final_batch4__structural_task5_wind_diaphragm_shear__blind/output/submission.zip": "067f610d39e9a66ab2fff0d9f14a467784ba9e03"
+        "filesystem/final_batch4__structural_task5_wind_diaphragm_shear__blind/output/submission.zip": "3f833640d7ed3d8251fce6e188cac466799f922d"
       },
       "final_message": "eda27a7f89f875c9444e2701ee8493e09145bd78",
       "deleted": [],
