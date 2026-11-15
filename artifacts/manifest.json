@@ -391,6 +391,47 @@
       "final_message": "5510a420fb660c851ec44953d7cc20ba5bd9831c",
       "deleted": [],
       "skipped": []
+    },
+    "emergency-spillway-check": {
+      "run": "fractal-engineering-harness-20261115-063000",
+      "trial": "t7-check-what-comment-g-4-turns-up-on-the-c-9-emergency-spillway-b09ef835",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "e0c21fa558c3127785656398e3b3bd7da5e5a5a6",
+      "files": {
+        "filesystem/Memo_to_Callaway_Spillway_2026-10-31.docx": "76019c7bdf0a7684b14ad7a1f4eec8092294968f"
+      },
+      "final_message": "585f54c7ec752573fc83f8e9d208ad2f0b060906",
+      "deleted": [],
+      "skipped": []
+    },
+    "engineers-estimate-check": {
+      "run": "fractal-engineering-harness-20261115-063000",
+      "trial": "confirm-the-phase-3-engineer-s-estimate-ahead-of-the-bond-conversation-f38f3a26",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "e0c21fa558c3127785656398e3b3bd7da5e5a5a6",
+      "files": {
+        "filesystem/Correspondence/Client/Memo_to_Callaway_2026-10-31.docx": "4c805ce3506280b3b412b52fcea48804eb189eb9",
+        "filesystem/Memo_to_Callaway_2026-10-31.docx": "4c805ce3506280b3b412b52fcea48804eb189eb9"
+      },
+      "final_message": "15f340c418627c4d329184b968d098f4ee431764",
+      "deleted": [],
+      "skipped": []
+    },
+    "foundation-strategy": {
+      "run": "fractal-engineering-harness-20261115-063000",
+      "trial": "dc_structural__foundation_strategy__blind",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "e0c21fa558c3127785656398e3b3bd7da5e5a5a6",
+      "files": {
+        "filesystem/dc_structural__foundation_strategy__blind/output/submission.zip": "34a88b93c4b57c493b6b2b31f970323c1ff44e43",
+        "filesystem/filesystem/dc_structural__foundation_strategy__blind/output/submission.zip": "34a88b93c4b57c493b6b2b31f970323c1ff44e43"
+      },
+      "final_message": "eb68272cba62d111dd4621ec2fb350935129253e",
+      "deleted": [],
+      "skipped": []
     }
   }
 }
