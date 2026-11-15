@@ -352,6 +352,45 @@
       "final_message": "59bda9404be9671947bae034ba9b351205f66916",
       "deleted": [],
       "skipped": []
+    },
+    "footing-settlement-verification": {
+      "run": "fractal-engineering-harness-20261115-060000",
+      "trial": "ce01-block-c-spread-footing-settlement-verification-8dad83bb",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "e0c21fa558c3127785656398e3b3bd7da5e5a5a6",
+      "files": {
+        "filesystem/Thelbridge_Verification_Memo_Item051_BlockC.docx": "fa355d50987ab03f88410fd6d9e4ed4f6dc49be6"
+      },
+      "final_message": "29452d3fd309fe029a27defa09f4b720c27a7be4",
+      "deleted": [],
+      "skipped": []
+    },
+    "fill-compaction-acceptance": {
+      "run": "fractal-engineering-harness-20261115-060000",
+      "trial": "ce01-slab-on-grade-fill-compaction-acceptance-3d2c133e",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "e0c21fa558c3127785656398e3b3bd7da5e5a5a6",
+      "files": {
+        "filesystem/Thelbridge_Materials_Acceptance_Fill_Compaction_2026-0708.docx": "3a5285b4b95d5925c2505449f927e409c9f92ef1"
+      },
+      "final_message": "51cae1acb64959991bcfb353fecc0ef303a2a1a6",
+      "deleted": [],
+      "skipped": []
+    },
+    "shoring-design-verification": {
+      "run": "fractal-engineering-harness-20261115-060000",
+      "trial": "ce01-block-b-excavation-hold-point-verification-6d20235b",
+      "ended": "ok",
+      "reward": 1.0,
+      "tree": "e0c21fa558c3127785656398e3b3bd7da5e5a5a6",
+      "files": {
+        "filesystem/Thelbridge_Verification_Memo_Item048_BlockB.docx": "811e36f2ea037fa2f65b4877208b89a0ae7d041c"
+      },
+      "final_message": "5510a420fb660c851ec44953d7cc20ba5bd9831c",
+      "deleted": [],
+      "skipped": []
     }
   }
 }
