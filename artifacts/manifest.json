@@ -103,10 +103,10 @@
       "run": "fractal-engineering-harness-20261113-012017",
       "trial": "roof-deck-design__i92ydsy",
       "ended": "ok",
-      "reward": 0.83306,
+      "reward": 0.829008,
       "tree": "b4ab89b88b9181c8a6592ee9da7ccdddfea94c018d3f26be8f72cb1b2778d40e",
       "files": {
-        "filesystem/final_batch4__structural_task7_roof_deck_design__blind/output/submission.zip": "4e485da9a553cae7e1e7ef79ba77d60eab57c59a"
+        "filesystem/final_batch4__structural_task7_roof_deck_design__blind/output/submission.zip": "5f5c6c94b59e58d9289607887e4974e7415e3249"
       },
       "final_message": "79e0cdf2e7ae22f18943da9fea7c60893616d02e",
       "deleted": [],
@@ -172,11 +172,11 @@
       "run": "fractal-engineering-harness-20261114-003013",
       "trial": "division-26-specifications__8iQ8YNo",
       "ended": "ok",
-      "reward": 0.8608,
+      "reward": 0.998942,
       "tree": "9264e9cd4aea4c3604d3579184bc72a7ba38c27687071249640ddf43998ac03e",
       "dev_set": "85ad6d96fbf76ee64d9fb6339b3bf342b07128a2ebadc0a10f008c95dac01a48",
       "files": {
-        "filesystem/final_batch4__electrical_task8_electrical_specs__blind/output/submission.zip": "6eb790970ed897e3740d378b9e31b24e952a96c1"
+        "filesystem/final_batch4__electrical_task8_electrical_specs__blind/output/submission.zip": "d2275ef6cc90283a838748bb7cbe545f34439b2c"
       },
       "final_message": "e7a96fd7d81ddc226f8b0b8040d047a1557517da",
       "deleted": [],
